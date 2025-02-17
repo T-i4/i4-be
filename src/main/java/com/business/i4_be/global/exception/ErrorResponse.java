@@ -9,6 +9,6 @@ public class ErrorResponse {
 
   private final int code;
   private final int status;
-  private final String message; ;
+  private final String message;
 
 }
