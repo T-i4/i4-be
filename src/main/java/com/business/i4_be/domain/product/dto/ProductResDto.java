@@ -1,0 +1,56 @@
+package com.business.i4_be.domain.product.dto;
+
+import com.business.i4_be.domain.product.constants.ProductStatus;
+import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class ProductResDto {
+
+  private UUID storeId;
+  private Product product;
+
+  @Getter
+  @Builder
+  @NoArgsConstructor(access = AccessLevel.PRIVATE)
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  private static class Product {
+
+    private UUID productId;
+    private String productName;
+    private Integer quantity;
+    private Integer price;
+    private String text;
+    private ProductStatus status;
+    private String imageUrl;
+
+    public static Product from(com.business.i4_be.domain.product.entity.Product product) {
+      return Product.builder()
+          .productId(product.getProductId())
+          .productName(product.getProductName())
+          .quantity(product.getQuantity())
+          .price(product.getPrice())
+          .text(product.getText())
+          .status(product.getStatus())
+          .imageUrl(product.getImage())
+          .build();
+    }
+  }
+
+  public static ProductResDto from(UUID storeId,
+      com.business.i4_be.domain.product.entity.Product product) {
+    Product getProduct = Product.from(product);
+
+    return ProductResDto.builder()
+        .storeId(storeId)
+        .product(getProduct)
+        .build();
+  }
+}
