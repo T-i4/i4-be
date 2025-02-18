@@ -20,7 +20,7 @@ import java.util.UUID;
 @Builder
 @Table(name = "p_stores")
 public class Store extends BaseEntity {
-
+//
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID storeId;

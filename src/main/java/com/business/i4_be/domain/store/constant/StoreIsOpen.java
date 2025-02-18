@@ -1,7 +1,7 @@
 package com.business.i4_be.domain.store.constant;
 
 import lombok.Getter;
-
+//
 @Getter
 public enum StoreIsOpen {
     OPEN("영업 중"),
