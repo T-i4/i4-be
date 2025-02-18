@@ -1,6 +1,7 @@
 package com.business.i4_be.domain.order.entity;
 
 import com.business.i4_be.domain.order.constant.OrderStatus;
+import com.business.i4_be.domain.order.constant.OrderType;
 import com.business.i4_be.domain.user.entity.Address;
 import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.global.entity.BaseEntity;
@@ -28,7 +29,7 @@ public class Order extends BaseEntity {
 
     @Column(name = "order_type")
     @Enumerated(EnumType.STRING)
-    private String oderType;
+    private OrderType oderType;
 
     @Column(name = "order_status")
     @Enumerated(EnumType.STRING)
