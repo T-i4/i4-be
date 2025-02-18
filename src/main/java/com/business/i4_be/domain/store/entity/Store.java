@@ -23,23 +23,24 @@ public class Store extends BaseEntity {
 //
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "uuid", nullable = false, updatable = false)
     private UUID storeId;
 
     @Column(name = "store_name", nullable = false, length = 255)
     private String storeName;
 
-    @NotBlank(message = "가게 주소는 필수입니다.")
+
     @Column(name = "store_address", nullable = false, length = 255)
     private String storeAddress;
 
     @Column(name = "store_detail", columnDefinition = "TEXT")
     private String storeDetail;
 
-    @NotNull(message = "오픈 시간은 필수입니다.")
+
     @Column(name = "open_time", nullable = false)
     private LocalTime openTime;
 
-    @NotNull(message = "닫는 시간은 필수입니다.")
+
     @Column(name = "closed_time", nullable = false)
     private LocalTime closedTime;
 
