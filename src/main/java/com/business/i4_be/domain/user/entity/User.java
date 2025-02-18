@@ -1,4 +1,4 @@
-package com.business.i4_be.user.entity;
+package com.business.i4_be.domain.user.entity;
 
 import com.business.i4_be.global.entity.BaseEntity;
 import jakarta.persistence.*;

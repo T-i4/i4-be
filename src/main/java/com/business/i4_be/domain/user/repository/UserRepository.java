@@ -1,6 +1,6 @@
-package com.business.i4_be.user.repository;
+package com.business.i4_be.domain.user.repository;
 
-import com.business.i4_be.user.entity.User;
+import com.business.i4_be.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

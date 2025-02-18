@@ -1,4 +1,4 @@
-package com.business.i4_be.user.dto.response;
+package com.business.i4_be.domain.user.dto.response;
 
 import lombok.Getter;
 
