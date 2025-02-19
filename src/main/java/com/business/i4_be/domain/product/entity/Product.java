@@ -30,7 +30,7 @@ public class Product extends BaseEntity {
   @Column(columnDefinition = "uuid", nullable = false, updatable = false)
   private UUID productId;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String productName;
 
   private Integer quantity;
@@ -45,4 +45,8 @@ public class Product extends BaseEntity {
   private ProductStatus status;
 
   private String image;
+
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "store_id")
+//  private Store store;
 }
