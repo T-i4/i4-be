@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CartResDto {
 
-  private UUID userId;
+  private Long userId;
   private UUID cartId;
   private List<Product> products;
 
@@ -41,7 +41,7 @@ public class CartResDto {
     }
   }
 
-  public static CartResDto from(UUID userId, UUID cartId, List<ProductCart> productCarts) {
+  public static CartResDto from(Long userId, UUID cartId, List<ProductCart> productCarts) {
     List<Product> addProducts = productCarts.stream()
         .map(Product::from).toList();
 

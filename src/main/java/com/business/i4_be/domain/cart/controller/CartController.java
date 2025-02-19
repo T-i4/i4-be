@@ -27,7 +27,7 @@ public class CartController {
 
   @PostMapping
   public ResponseEntity<CartResDto> addCart(
-      @RequestParam("userId") UUID userId, // 추후 변경
+      @RequestParam("userId") Long userId, // 추후 변경
       @Valid @RequestBody AddCartReqDto requestDto) {
     return ResponseEntity.ok(cartService.addCart(userId, requestDto));
   }
@@ -35,7 +35,7 @@ public class CartController {
   @GetMapping("/{cartId}")
   public ResponseEntity<CartResDto> getCart(
       @PathVariable("cartId") UUID cartId,
-      @RequestParam("userId") UUID userId
+      @RequestParam("userId") Long userId
   ) {
     return ResponseEntity.ok(cartService.getCart(userId, cartId));
   }
@@ -43,7 +43,7 @@ public class CartController {
   @PutMapping("/{cartId}")
   public ResponseEntity<CartResDto> updateCart(
       @PathVariable("cartId") UUID cartId,
-      @RequestParam("userId") UUID userId,
+      @RequestParam("userId") Long userId,
       @Valid @RequestBody UpdateCartReqDto requestDto
   ) {
     return ResponseEntity.ok(cartService.updateCart(userId, cartId, requestDto));
@@ -52,7 +52,7 @@ public class CartController {
   @DeleteMapping("/{cartId}")
   public ResponseEntity<Void> deleteCart(
       @PathVariable("cartId") UUID cartId,
-      @RequestParam("userId") UUID userId
+      @RequestParam("userId") Long userId
   ) {
     return ResponseEntity.ok(cartService.deleteCart(userId, cartId));
   }

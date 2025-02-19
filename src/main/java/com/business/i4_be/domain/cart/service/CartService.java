@@ -16,19 +16,19 @@ public class CartService {
   private final CartRepository cartRepository;
   private final ProductCartRepository productCartRepository;
 
-  public CartResDto addCart(UUID userId, AddCartReqDto requestDto) {
+  public CartResDto addCart(Long userId, AddCartReqDto requestDto) {
     return null;
   }
 
-  public CartResDto getCart(UUID userId, UUID cartId) {
+  public CartResDto getCart(Long userId, UUID cartId) {
     return null;
   }
 
-  public CartResDto updateCart(UUID userId, UUID cartId, UpdateCartReqDto requestDto) {
+  public CartResDto updateCart(Long userId, UUID cartId, UpdateCartReqDto requestDto) {
     return null;
   }
 
-  public Void deleteCart(UUID userId, UUID cartId) {
+  public Void deleteCart(Long userId, UUID cartId) {
     return null;
   }
 }
