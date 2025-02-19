@@ -34,8 +34,9 @@ public class ProductController {
 
   @PostMapping
   public ResponseEntity<AddProductResDto> addProduct(
+      @RequestParam("userId") Long userId,
       @Valid @RequestBody AddProductReqDto requestDto) {
-    return ResponseEntity.status(CREATED).body(productService.addProduct(requestDto));
+    return ResponseEntity.status(CREATED).body(productService.addProduct(userId, requestDto));
   }
 
   @PutMapping("/{productId}")

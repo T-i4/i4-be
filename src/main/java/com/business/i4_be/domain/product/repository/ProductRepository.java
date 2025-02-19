@@ -10,4 +10,8 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
   Optional<Product> findByProductId(UUID productId);
+
+  boolean existsByProductName(String productName);
+
+  Optional<Product> findByProductName( String productName);
 }
