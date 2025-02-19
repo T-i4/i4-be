@@ -10,16 +10,20 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class UserDetailsImpl implements UserDetails {
     private final User user;
-    private final GrantedAuthority authority; // ✅ 단일 권한 필드로 변경
+    private final GrantedAuthority authority;
 
     public UserDetailsImpl(User user, String role) {
         this.user = user;
-        this.authority = new SimpleGrantedAuthority("ROLE_" + role); // ✅ ROLE_ 붙이기
+        this.authority = new SimpleGrantedAuthority("ROLE_" + role);
+    }
+
+    public User getUser() {
+        return user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(authority); // ✅ 단일 권한을 리스트로 반환
+        return List.of(authority);
     }
 
     @Override

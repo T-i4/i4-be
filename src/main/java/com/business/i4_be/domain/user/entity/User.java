@@ -37,4 +37,36 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role = UserRole.USER; // 기본 권한 : USER
+
+    public Long getId() {
+        return userId;
+    }
+
+    // 정보 수정
+    public void updateUserInfo(String username, String email, String nickname, String phoneNumber) {
+        this.username = username;
+        this.email = email;
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void updateUsername(String username) {
+        this.username = username;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

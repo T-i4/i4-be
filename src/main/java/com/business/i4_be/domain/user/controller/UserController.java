@@ -1,11 +1,12 @@
 package com.business.i4_be.domain.user.controller;
 
+import com.business.i4_be.domain.user.dto.request.UpdateUserRequest;
 import com.business.i4_be.domain.user.dto.response.UserResponse;
-import com.business.i4_be.domain.user.entity.User;
+import com.business.i4_be.domain.user.security.UserDetailsImpl;
 import com.business.i4_be.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,5 +37,11 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-
+    // 정보 수정
+    @PutMapping("/update/me")
+    public ResponseEntity<UserResponse> updateUser(
+            @RequestBody UpdateUserRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(userService.updateUser(userDetails.getUser().getId(), request));
+    }
 }

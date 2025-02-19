@@ -1,5 +1,6 @@
 package com.business.i4_be.domain.user.service;
 
+import com.business.i4_be.domain.user.dto.request.UpdateUserRequest;
 import com.business.i4_be.domain.user.dto.response.UserResponse;
 import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.domain.user.repository.UserRepository;
@@ -53,4 +54,31 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
         return new UserResponse(user);
     }
+
+    // 정보 수정
+    public UserResponse updateUser(Long userId, UpdateUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+
+        // 입력된 값이 기존 값과 다를 경우에만 업데이트
+        if (request.getUsername() != null && !request.getUsername().equals(user.getUsername())) {
+            user.updateUsername(request.getUsername());
+        }
+        if (request.getNickname() != null && !request.getNickname().equals(user.getNickname())) {
+            user.updateNickname(request.getNickname());
+        }
+        if (request.getEmail() != null && !request.getEmail().equals(user.getEmail())) {
+            user.updateEmail(request.getEmail());
+        }
+        if (request.getPhoneNumber() != null && !request.getPhoneNumber().equals(user.getPhoneNumber())) {
+            user.updatePhoneNumber(request.getPhoneNumber());
+        }
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            user.updatePassword(passwordEncoder.encode(request.getPassword())); // 비밀번호 암호화
+        }
+
+        userRepository.save(user);
+        return new UserResponse(user);
+    }
+
 }
