@@ -17,30 +17,34 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    // 유저 주문 조회(여러건)
     @GetMapping
-    public ResponseEntity<List<OrderResDto>> getUserOrders(@PathVariable UUID userId) {
+    public ResponseEntity<List<OrderResDto>> getUserOrders(@PathVariable Long userId) {
         return ResponseEntity.ok(orderService.getUserOrders(userId));
     }
 
+    // 유저 주문 상세 조회(단건)
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderResDto> getUserOrderDetail(
-            @PathVariable UUID userId,
+            @PathVariable Long userId,
             @PathVariable UUID orderId
     ) {
         return ResponseEntity.ok(orderService.getUserOrderDetail(userId, orderId));
     }
 
+    // 주문 생성
     @PostMapping
     public ResponseEntity<OrderResDto> createOrder(
-            @PathVariable UUID userId,
+            @PathVariable Long userId,
             @RequestBody OrderReqDto request
     ) {
         return ResponseEntity.ok(orderService.createOrder(userId, request));
     }
 
+    // 주문 취소
     @PatchMapping("/{orderId}/cancel")
     public ResponseEntity<OrderResDto> cancelOrder(
-            @PathVariable UUID userId,
+            @PathVariable Long userId,
             @PathVariable UUID orderId
     ) {
         return ResponseEntity.ok(orderService.cancelOrder(userId, orderId));

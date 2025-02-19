@@ -6,13 +6,17 @@ import com.business.i4_be.domain.user.entity.Address;
 import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "p_orders")
 public class Order extends BaseEntity {
 
@@ -39,9 +43,23 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id",nullable = false)
     private Address address;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<OrderProduct> orderProducts = new ArrayList<>();
 
+    public void addOrderProduct(OrderProduct orderProduct) {
+        orderProducts.add(orderProduct);
+        orderProduct.setOrder(this);
+    }
+
+    public void setOrderProducts(List<OrderProduct> orderProducts) {
+        this.orderProducts.clear();
+        if (orderProducts != null) {
+            orderProducts.forEach(this::addOrderProduct);
+        }
+    }
 }
