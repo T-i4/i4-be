@@ -18,7 +18,9 @@ public class ProductOwnerController {
   private final ProductService productService;
 
   @GetMapping
-  public ResponseEntity<ProductsResDto> getProducts(@RequestParam("storeId") UUID storeId) {
+  public ResponseEntity<ProductsResDto> getProducts(
+      @RequestParam("userId") Long userId,
+      @RequestParam("storeId") UUID storeId) {
     return ResponseEntity.ok().body(productService.getProducts(storeId));
   }
 }
