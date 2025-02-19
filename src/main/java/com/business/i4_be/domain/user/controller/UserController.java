@@ -14,9 +14,5 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> signup(@RequestBody SignupRequest request) {
-        SignupResponse response = userService.signup(request);
-        return ResponseEntity.ok(response);
-    }
+
 }
