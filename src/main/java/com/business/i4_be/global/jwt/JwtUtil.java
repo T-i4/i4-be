@@ -8,12 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-// 토큰 생성 및 검증
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -23,35 +21,44 @@ public class JwtUtil {
     private String secretKey;
 
     private Key key;
-    // token 의 무결성을 보장하기 위해 HMAC SHA256 알고리즘 사용
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
-    // Base64 인코딩된 Secret Key 를 디코딩하여 바이너리 데이터로 변환
-    // 디코딩한 데이터를 사용하여 JWT 서명용 Key 객체 생성
     @PostConstruct
     public void init() {
         key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
     }
 
-    // Token 생성 (username 과 Token 만료 시간 설정)
-    public String generateToken(String subject, long expirationMs) {
+    // ✅ Token 생성 시 권한 값이 없으면 기본값("ROLE_USER")을 추가
+    public String generateToken(String subject, String authorities, long expirationMs) {
+        if (authorities == null || authorities.isEmpty()) {
+            authorities = "ROLE_USER";  // 기본 권한 추가
+        }
+
         return Jwts.builder()
                 .setSubject(subject)
+                .claim("auth", authorities)
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(key, signatureAlgorithm)
                 .compact();
     }
 
-    // Token 에서 정보 추출 (Token 이 만료되면 예외 대신 Claims 를 반환하여 User 에게 알림)
+    // ✅ Token 에서 정보 추출할 때 auth 값이 없으면 기본값 부여
     public Claims parseClaims(String token) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+
+            // auth 클레임이 없거나 비어있다면 기본값 추가
+            if (!claims.containsKey("auth") || claims.get("auth", String.class) == null) {
+                claims.put("auth", "ROLE_USER");
+            }
+
+            return claims;
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
     }
 
-    // Token 검증
+    // ✅ Token 검증 시 상세한 예외 처리 추가
     public TokenStatus validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -59,8 +66,14 @@ public class JwtUtil {
         } catch (ExpiredJwtException e) {
             log.error("토큰이 만료되었습니다.");
             return TokenStatus.EXPIRED;
+        } catch (MalformedJwtException e) {
+            log.error("잘못된 형식의 JWT 입니다.");
+            return TokenStatus.INVALID;
+        } catch (SignatureException e) {
+            log.error("JWT 서명이 유효하지 않습니다.");
+            return TokenStatus.INVALID;
         } catch (JwtException e) {
-            log.error("토큰이 유효하지 않습니다.");
+            log.error("JWT 검증 중 오류가 발생했습니다.");
             return TokenStatus.INVALID;
         }
     }
