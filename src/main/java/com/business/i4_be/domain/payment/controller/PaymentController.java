@@ -12,18 +12,19 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1")
 public class PaymentController {
 
     private final PaymentService paymentService;
 
     // 전체 결제목록 조회
-    @GetMapping("/api/v1/payments")
+    @GetMapping("/payments")
     public ResponseEntity<List<PaymentResDto>> getAllPayments() {
         return ResponseEntity.ok(paymentService.getAllPayments());
     }
 
     // 유저의 결제 목록 조회 (여러건)
-    @GetMapping("/api/v1/users/{userId}/payments")
+    @GetMapping("/users/{userId}/payments")
     public ResponseEntity<List<PaymentResDto>> getUserPayments(
             @PathVariable Long userId
     ) {
@@ -31,7 +32,7 @@ public class PaymentController {
     }
 
     // 유저의 특정 결제 기록 조회 (단건)
-    @GetMapping("/api/v1/users/{userId}/payments/{paymentId}")
+    @GetMapping("/users/{userId}/payments/{paymentId}")
     public ResponseEntity<PaymentResDto> getUserPaymentDetail(
             @PathVariable Long userId,
             @PathVariable UUID paymentId
@@ -40,7 +41,7 @@ public class PaymentController {
     }
 
     // 유저의 결제 기록 생성
-    @PostMapping("/api/v1/users/{userId}/payments")
+    @PostMapping("/users/{userId}/payments")
     public ResponseEntity<PaymentResDto> createPayment(
             @PathVariable Long userId,
             @RequestBody PaymentReqDto request
@@ -49,7 +50,7 @@ public class PaymentController {
     }
 
     // 결제 취소
-    @PatchMapping("/api/v1/users/{userId}/payments/{paymentId}")
+    @PatchMapping("/users/{userId}/payments/{paymentId}")
     public ResponseEntity<PaymentResDto> cancelPayment(
             @PathVariable Long userId,
             @PathVariable UUID paymentId
