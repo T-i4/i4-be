@@ -8,13 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api") // 기본 URL 설정
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/signup")  // 회원가입 API
+    @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(@RequestBody SignupRequest request) {
         SignupResponse response = userService.signup(request);
         return ResponseEntity.ok(response);
