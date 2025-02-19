@@ -1,14 +1,18 @@
 package com.business.i4_be.domain.product.entity;
 
 import com.business.i4_be.domain.product.constants.ProductStatus;
+import com.business.i4_be.domain.store.entity.Store;
 import com.business.i4_be.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -33,6 +37,7 @@ public class Product extends BaseEntity {
   @Column(nullable = false, unique = true)
   private String productName;
 
+  @Column(nullable = false)
   private Integer quantity;
 
   @Column(nullable = false)
@@ -46,7 +51,7 @@ public class Product extends BaseEntity {
 
   private String image;
 
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "store_id")
-//  private Store store;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "store_id")
+  private Store store;
 }
