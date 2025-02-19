@@ -17,4 +17,8 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
   List<Product> findByStore_storeIdAndProductNameContaining(UUID storeId, String keyword);
 
   List<Product> findByStore_storeId(UUID storeId);
+
+  boolean existsByProductName(String productName);
+
+  Optional<Product> findByProductName( String productName);
 }

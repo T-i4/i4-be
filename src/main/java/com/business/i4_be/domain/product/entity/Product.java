@@ -34,7 +34,7 @@ public class Product extends BaseEntity {
   @Column(columnDefinition = "uuid", nullable = false, updatable = false)
   private UUID productId;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String productName;
 
   @Column(nullable = false)
