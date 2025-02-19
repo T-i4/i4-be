@@ -14,7 +14,7 @@ public class PaymentResDto {
     @Data
     public static class PaymentDetail {
         private UUID paymentId;
-        private UUID userId;
+        private Long userId;
         private Long amount;
         private PaymentStatus status;
         private LocalDateTime createdAt;
