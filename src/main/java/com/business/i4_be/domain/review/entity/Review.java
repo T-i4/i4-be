@@ -4,6 +4,7 @@ import com.business.i4_be.domain.order.entity.Order;
 import com.business.i4_be.domain.store.entity.Store;
 import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.global.entity.BaseEntity;
+import com.business.i4_be.global.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
@@ -56,4 +57,5 @@ public class Review extends BaseEntity {
         this.text = text;
         this.rating = rating;
     }
+
 }
