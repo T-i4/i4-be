@@ -40,9 +40,7 @@ public class StoreResDto {
         this.isOpen = isOpen;
     }
 
-    /**
-     *  Store 엔티티를 StoreResDto로 변환하는 정적 메서드
-     */
+
     public static StoreResDto fromEntity(Store store) {
         return StoreResDto.builder()
                 .storeId(store.getStoreId())
@@ -57,9 +55,7 @@ public class StoreResDto {
                 .build();
     }
 
-    /**
-     * Store 엔티티 리스트를 StoreResDto 리스트로 변환하는 정적 메서드
-     */
+
     public static List<StoreResDto> fromEntityList(List<Store> stores) {
         return stores.stream()
                 .map(StoreResDto::fromEntity)
