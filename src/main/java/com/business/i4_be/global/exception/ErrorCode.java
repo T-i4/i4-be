@@ -25,15 +25,18 @@ public enum ErrorCode {
   DUPLICATE_STORE_NAME(2000, BAD_REQUEST.value(), "이미 존재하는 가게 이름입니다." ),
   STORE_ALREADY_DELETED(2000, NOT_FOUND.value(),"이미 삭제된 가게입니다." ),
 
-
+  /** 
+   * Order : 4000
+   */
+  ORDER_NOT_FOUND(4000, NOT_FOUND.value(), "주문을 찾을 수 없습니다."),
+  ORDER_NOT_BELONG_TO_USER(4000, BAD_REQUEST.value(), "해당 사용자의 주문이 아닙니다."),
+  ADDRESS_NOT_FOUND(4000, NOT_FOUND.value(), "주소를 찾을 수 없습니다."),
   ORDER_NOT_COMPLETED(4000, BAD_REQUEST.value(),"완료되지 않은 주문입니다." ),
-
 
   /**
    * Review : 5000번
    * */
   REVIEW_NOT_FOUND(5000, NOT_FOUND.value(), "존재하지 않는 리뷰입니다." ),
-
 
   /**
    * Product 3000번
