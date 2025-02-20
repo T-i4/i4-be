@@ -1,6 +1,7 @@
 package com.business.i4_be.domain.product.dto;
 
 import com.business.i4_be.domain.product.constants.ProductStatus;
+import com.business.i4_be.domain.product.entity.Product;
 import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -16,13 +17,13 @@ import lombok.NoArgsConstructor;
 public class ProductsResDto {
 
   private UUID storeId;
-  private List<Product> products;
+  private List<ProductDto> products;
 
   @Getter
   @Builder
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
-  private static class Product {
+  private static class ProductDto {
     private UUID productId;
     private String productName;
     private Integer quantity;
@@ -31,8 +32,8 @@ public class ProductsResDto {
     private ProductStatus status;
     private String imageUrl;
 
-    public static Product from(com.business.i4_be.domain.product.entity.Product product) {
-      return Product.builder()
+    public static ProductDto from(Product product) {
+      return ProductDto.builder()
           .productId(product.getProductId())
           .productName(product.getProductName())
           .quantity(product.getQuantity())
@@ -44,9 +45,9 @@ public class ProductsResDto {
     }
   }
 
-  public static ProductsResDto from(UUID storeId, List<com.business.i4_be.domain.product.entity.Product> products) {
-    List<Product> productList = products.stream()
-        .map(Product::from).toList();
+  public static ProductsResDto from(UUID storeId, List<Product> products) {
+    List<ProductDto> productList = products.stream()
+        .map(ProductDto::from).toList();
 
     return ProductsResDto.builder()
         .storeId(storeId)

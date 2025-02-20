@@ -39,8 +39,8 @@ public enum ErrorCode {
   /**
    * Product 3000번
    */
-  ALREADY_EXIST_PRODUCT(3000, BAD_REQUEST.value(), "이미 존재하는 상품명입니다.");
-
+  ALREADY_EXIST_PRODUCT(3000, BAD_REQUEST.value(), "이미 존재하는 상품명입니다."),
+  PRODUCT_NOT_FOUND(3000, NOT_FOUND.value(), "상품이 존재하지 않습니다.");
 
   private final int code; // 도메인 관리 코드
   private final int status;
