@@ -5,20 +5,22 @@ import com.business.i4_be.domain.payment.entity.Payment;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Getter @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentResDto {
+public class PaymentListResDto {
     private Long userId;
-    private PaymentDetail payment;
+    private List<PaymentDetail> payments;
 
-    public static PaymentResDto of(Long userId, Payment payment) {
-        return PaymentResDto.builder()
+    public static PaymentListResDto of(Long userId, List<Payment> payment) {
+        return PaymentListResDto.builder()
                 .userId(userId)
-                .payment(PaymentDetail.from(payment))
+                .payments(payment.stream().map(PaymentDetail::from).collect(Collectors.toList()))
                 .build();
     }
 
@@ -41,4 +43,5 @@ public class PaymentResDto {
                     .build();
         }
     }
+
 }
