@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @ToString
 public class OrderResDto {
     private UUID orderId;
+
     private Long userId;
     private String orderStatus;
     private LocalDateTime createdAt;
