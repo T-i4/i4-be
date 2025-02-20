@@ -1,11 +1,15 @@
 package com.business.i4_be.domain.review.service;
 
 
+import com.business.i4_be.domain.order.constant.OrderStatus;
+import com.business.i4_be.domain.order.entity.Order;
 import com.business.i4_be.domain.order.repository.OrderRepository;
 import com.business.i4_be.domain.review.dto.ReviewReqDto;
 import com.business.i4_be.domain.review.dto.ReviewResDto;
 import com.business.i4_be.domain.review.entity.Review;
 import com.business.i4_be.domain.review.repository.ReviewRepository;
+import com.business.i4_be.domain.store.entity.Store;
+import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.global.exception.CustomException;
 import com.business.i4_be.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,10 +27,36 @@ public class ReviewService {
 
     private final OrderRepository orderRepository;
 
-    public ReviewResDto.ReviewDto createReview(UUID orderId, ReviewReqDto.ReivewDto reviewReqDto) {
+    @Transactional
+    public ReviewResDto.ReviewDto createReview(UUID orderId, ReviewReqDto.ReviewDto reviewReqDto) {
 
-        return null;
+        // 주문 가져오기
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+        //주문 유저 가져오기
+        User user =order.getUser();
+        //주문이 속한 Store
+        Store store = order.getStore();
+
+        // 주문 상태가 COMPLETED인지 확인
+        if (!OrderStatus.COMPLETED.equals(order.getOrderStatus())) {
+            throw new CustomException(ErrorCode.ORDER_NOT_COMPLETED);
+        }
+
+        // 리뷰 생성
+        Review review = Review.builder()
+                .user(user)
+                .store(store)
+                .order(order)
+                .rating(reviewReqDto.getRating())
+                .text(reviewReqDto.getText())
+                .build();
+
+        reviewRepository.save(review);
+        return ReviewResDto.ReviewDto.fromEntity(review);
     }
+
 
     //리뷰 수정
     @Transactional
@@ -55,10 +86,9 @@ public class ReviewService {
         return ReviewResDto.ReviewListDto.fromEntity(null, reviews); // storeId 필요 없음
     }
 
-    //가게 ID로 리뷰 조회
-    @Transactional(readOnly = true)
-    public ReviewResDto.ReviewListDto getStoreReviews(UUID storeId) {
-        List<Review> reviews = reviewRepository.findByStoreId(storeId);
+
+    public ReviewResDto.ReviewListDto getReviewsByStore(UUID storeId) {
+        List<Review> reviews = reviewRepository.findByStore_StoreId(storeId);
         return ReviewResDto.ReviewListDto.fromEntity(storeId, reviews);
     }
 }

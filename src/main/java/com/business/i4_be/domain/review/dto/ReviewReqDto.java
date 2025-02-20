@@ -16,14 +16,15 @@ import java.util.UUID;
 @Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class ReviewReqDto {
+
 
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ReivewDto{
+    public static class ReviewDto{
         private UUID storeId;
         private UUID orderId;
         private Long userId;

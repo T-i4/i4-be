@@ -43,8 +43,6 @@ public class Review extends BaseEntity {
     @Column(name = "text", length = 255)
     private String text;
 
-
-
     public static Review createReview(Store store, Long userId, String text, int rating) {
         return Review.builder()
                 .store(store)
