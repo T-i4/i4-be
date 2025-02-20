@@ -49,7 +49,8 @@ public class OrderService {
     // 주문 생성
     @Transactional
     public OrderResDto createOrder(Long userId, OrderReqDto request) {
-        User user = userRepository.findUserByUserId(userId);
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         Address address = addressRepository.findById(request.getAddressId())
                 .orElseThrow(() -> new RuntimeException("Address not found"));
 
