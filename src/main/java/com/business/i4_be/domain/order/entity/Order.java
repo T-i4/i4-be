@@ -2,6 +2,7 @@ package com.business.i4_be.domain.order.entity;
 
 import com.business.i4_be.domain.order.constant.OrderStatus;
 import com.business.i4_be.domain.order.constant.OrderType;
+import com.business.i4_be.domain.store.entity.Store;
 import com.business.i4_be.domain.user.entity.Address;
 import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.global.entity.BaseEntity;
@@ -50,6 +51,10 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @Builder.Default
     private List<OrderProduct> orderProducts = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     public void addOrderProduct(OrderProduct orderProduct) {
         orderProducts.add(orderProduct);
