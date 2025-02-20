@@ -16,6 +16,9 @@ public class OrderReqDto {
     private UUID addressId;
     private OrderType orderType;
 
+    //추가
+    private UUID storeId;
+
     @Getter @Setter
     @AllArgsConstructor
     public static class OrderProductReq {

@@ -2,6 +2,7 @@ package com.business.i4_be.domain.order.entity;
 
 import com.business.i4_be.domain.order.constant.OrderStatus;
 import com.business.i4_be.domain.order.constant.OrderType;
+import com.business.i4_be.domain.review.entity.Review;
 import com.business.i4_be.domain.store.entity.Store;
 import com.business.i4_be.domain.user.entity.Address;
 import com.business.i4_be.domain.user.entity.User;
@@ -55,6 +56,17 @@ public class Order extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
+
+
+
+
+
+
+
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Review review;
+
 
     public void addOrderProduct(OrderProduct orderProduct) {
         orderProducts.add(orderProduct);

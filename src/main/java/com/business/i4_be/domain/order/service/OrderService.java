@@ -6,6 +6,8 @@ import com.business.i4_be.domain.order.dto.response.OrderResDto;
 import com.business.i4_be.domain.order.entity.Order;
 import com.business.i4_be.domain.order.entity.OrderProduct;
 import com.business.i4_be.domain.order.repository.OrderRepository;
+import com.business.i4_be.domain.store.entity.Store;
+import com.business.i4_be.domain.store.repository.StoreRepository;
 import com.business.i4_be.domain.user.entity.Address;
 import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.domain.user.repository.AddressRepository;
@@ -26,6 +28,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
+    private final StoreRepository storeRepository;
 
     // 유저 주문 조회(여러건)
     public List<OrderResDto> getUserOrders(Long userId) {
@@ -54,8 +57,13 @@ public class OrderService {
         Address address = addressRepository.findById(request.getAddressId())
                 .orElseThrow(() -> new RuntimeException("Address not found"));
 
+        //Store가져오기추가
+        Store store = storeRepository.findById(request.getStoreId())
+                .orElseThrow(() -> new RuntimeException("Store not found"));
+
         Order order = Order.builder()
                 .user(user)
+                .store(store) //추가
                 .orderStatus(OrderStatus.COMPLETED)
                 .address(address)
                 .build();
