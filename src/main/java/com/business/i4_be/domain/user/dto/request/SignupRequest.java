@@ -10,7 +10,7 @@ import lombok.Getter;
 public class SignupRequest {
 
     @NotBlank
-    @Size(min = 4, max = 10, message = "닉네임은 4자 이상 10자 이하여야 합니다.")
+    @Size(min = 4, max = 10, message = "username은 4자 이상 10자 이하여야 합니다.")
     @Pattern(regexp = "^[a-z0-9]+$", message = "알파벳 소문자, 숫자가 최소 1개 이상 포함되어야 합니다.")
     private String username;
 

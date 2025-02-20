@@ -45,9 +45,9 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class) // CORS 필터 적용
-                .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class) // 예외 필터 적용
-                .addFilterBefore(new JwtFilter(jwtUtil, tokenProvider), UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
+                .addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class) // CORS 필터
+                .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class) // 예외 필터
+                .addFilterAfter(new JwtFilter(jwtUtil, tokenProvider), UsernamePasswordAuthenticationFilter.class) // 🔥 JwtFilter 실행 순서 변경
                 .formLogin(form -> form.disable()) // 기본 로그인 폼 비활성화
                 .httpBasic(httpBasic -> httpBasic.disable()); // HTTP Basic 인증 비활성화
 
