@@ -1,10 +1,10 @@
 package com.business.i4_be.global.exception;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Getter
 @RequiredArgsConstructor
@@ -32,9 +32,8 @@ public enum ErrorCode {
   /**
    * Review : 5000번
    * */
-  REVIEW_NOT_FOUND(5000, NOT_FOUND.value(), "존재하지 않는 리뷰입니다." );
+  REVIEW_NOT_FOUND(5000, NOT_FOUND.value(), "존재하지 않는 리뷰입니다." ),
 
-  USER_NOT_FOUND(1000, NOT_FOUND.value(), "유저가 존재하지 않습니다."),
 
   /**
    * Product 3000번
