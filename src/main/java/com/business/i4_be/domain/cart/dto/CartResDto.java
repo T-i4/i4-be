@@ -1,5 +1,6 @@
 package com.business.i4_be.domain.cart.dto;
 
+import com.business.i4_be.domain.cart.entity.Cart;
 import com.business.i4_be.domain.cart.entity.ProductCart;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +19,7 @@ public class CartResDto {
   private Long userId;
   private UUID cartId;
   private List<Product> products;
+  private Integer totalPrice;
 
   @Getter
   @Builder
@@ -41,14 +43,15 @@ public class CartResDto {
     }
   }
 
-  public static CartResDto from(Long userId, UUID cartId, List<ProductCart> productCarts) {
-    List<Product> addProducts = productCarts.stream()
+  public static CartResDto from(Long userId, Cart cart) {
+    List<Product> addProducts = cart.getProductCarts().stream()
         .map(Product::from).toList();
 
     return CartResDto.builder()
         .userId(userId)
-        .cartId(cartId)
+        .cartId(cart.getCartId())
         .products(addProducts)
+        .totalPrice(cart.getTotalPrice())
         .build();
   }
 }

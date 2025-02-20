@@ -49,4 +49,14 @@ public class ProductCart extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "cart_id")
   private Cart cart;
+
+  public Integer updateQuantity(Integer quantity) {
+    this.quantity += quantity;
+    return this.quantity;
+  }
+
+  public Integer updatePrice(Integer price) {
+    this.price = price;
+    return this.price;
+  }
 }

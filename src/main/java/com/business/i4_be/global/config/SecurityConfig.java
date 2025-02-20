@@ -43,6 +43,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/delete/me").authenticated()
                         .requestMatchers("/api/v1/delete/{userId}").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN")
 
+                        // --- 장바구니 ----
+                        .requestMatchers("/api/v1/cart/**").authenticated()
+                        .requestMatchers("/api/v1/cart/**")
+                        .hasAnyAuthority("ROLE_USER", "ROLE_MASTER", "ROLE_ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class) // CORS 필터
