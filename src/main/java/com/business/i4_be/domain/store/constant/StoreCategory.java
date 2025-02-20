@@ -15,4 +15,14 @@ public enum StoreCategory {
     StoreCategory(String description) {
         this.description = description;
     }
+    //주어진 카테고리 유효한지 체크하는 메서드
+    public static boolean isValidCategory(String category) {
+        try {
+            StoreCategory.valueOf(category.toUpperCase());  // Enum에 존재하는지 확인
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
 }

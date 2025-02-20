@@ -1,12 +1,13 @@
 package com.business.i4_be.domain.store.entity;
 
+import com.business.i4_be.domain.order.entity.Order;
 import com.business.i4_be.domain.review.entity.Review;
 import com.business.i4_be.domain.store.constant.StoreCategory;
 import com.business.i4_be.domain.store.constant.StoreIsOpen;
 import com.business.i4_be.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -19,27 +20,29 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Table(name = "p_stores")
+@SQLRestriction("deleted_at IS NULL")
 public class Store extends BaseEntity {
-//
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "uuid", nullable = false, updatable = false)
     private UUID storeId;
 
     @Column(name = "store_name", nullable = false, length = 255)
     private String storeName;
 
-    @NotBlank(message = "가게 주소는 필수입니다.")
+
     @Column(name = "store_address", nullable = false, length = 255)
     private String storeAddress;
 
     @Column(name = "store_detail", columnDefinition = "TEXT")
     private String storeDetail;
 
-    @NotNull(message = "오픈 시간은 필수입니다.")
+
     @Column(name = "open_time", nullable = false)
     private LocalTime openTime;
 
-    @NotNull(message = "닫는 시간은 필수입니다.")
+
     @Column(name = "closed_time", nullable = false)
     private LocalTime closedTime;
 
@@ -55,11 +58,11 @@ public class Store extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "is_open", nullable = false)
     private StoreIsOpen isOpen;
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = false;
-
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
 
 
     public void updateStoreInfo(String storeNumber, String storeAddress, String storeDetail,
@@ -75,9 +78,7 @@ public class Store extends BaseEntity {
     }
 
     // 도메인 메서드
-    public void softDelete() {
-        this.isDeleted = true;
-    }
+
     public void updateStatus(StoreIsOpen newStatus) {
         this.isOpen = newStatus;
     }
