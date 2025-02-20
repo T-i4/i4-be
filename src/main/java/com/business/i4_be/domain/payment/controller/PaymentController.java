@@ -1,13 +1,13 @@
 package com.business.i4_be.domain.payment.controller;
 
 import com.business.i4_be.domain.payment.dto.request.PaymentReqDto;
+import com.business.i4_be.domain.payment.dto.response.PaymentListResDto;
 import com.business.i4_be.domain.payment.dto.response.PaymentResDto;
 import com.business.i4_be.domain.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,13 +19,13 @@ public class PaymentController {
 
     // 전체 결제목록 조회
     @GetMapping("/payments")
-    public ResponseEntity<List<PaymentResDto>> getAllPayments() {
+    public ResponseEntity<PaymentListResDto> getAllPayments() {
         return ResponseEntity.ok(paymentService.getAllPayments());
     }
 
     // 유저의 결제 목록 조회 (여러건)
     @GetMapping("/users/{userId}/payments")
-    public ResponseEntity<List<PaymentResDto>> getUserPayments(
+    public ResponseEntity<PaymentListResDto> getUserPayments(
             @PathVariable Long userId
     ) {
         return ResponseEntity.ok(paymentService.getUserPayments(userId));
