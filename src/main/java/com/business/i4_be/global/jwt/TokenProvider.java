@@ -8,12 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -45,17 +41,15 @@ public class TokenProvider {
             role = "ROLE_USER"; // 기본 권한
         }
 
-        // ✅ 실제 DB에서 유저 조회
+        // 실제 DB에서 유저 조회
         User userEntity = userRepository.findByUsername(claims.getSubject())
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + claims.getSubject()));
 
-        // ✅ UserDetailsImpl 객체 생성 (role 문자열만 넘김)
+        // UserDetailsImpl 객체 생성 (role 문자열만 넘김)
         UserDetailsImpl principal = new UserDetailsImpl(userEntity, role);
 
         return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
     }
-
-
 
     public String refreshAccessToken(String refreshToken) {
         TokenStatus status = jwtUtil.validateToken(refreshToken);

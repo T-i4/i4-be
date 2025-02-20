@@ -28,7 +28,7 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
     }
 
-    // ✅ Token 생성 시 권한 값이 없으면 기본값("ROLE_USER")을 추가
+    // Token 생성 시 권한 값이 없으면 기본값("ROLE_USER")을 추가
     public String generateToken(String subject, String authorities, long expirationMs) {
         if (authorities == null || authorities.isEmpty()) {
             authorities = "ROLE_USER";  // 기본 권한 추가
@@ -42,7 +42,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // ✅ Token 에서 정보 추출할 때 auth 값이 없으면 기본값 부여
+    // Token 에서 정보 추출할 때 auth 값이 없으면 기본값 부여
     public Claims parseClaims(String token) {
         try {
             Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
@@ -58,7 +58,7 @@ public class JwtUtil {
         }
     }
 
-    // ✅ Token 검증 시 상세한 예외 처리 추가
+    // Token 검증 시 상세한 예외 처리 추가
     public TokenStatus validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);

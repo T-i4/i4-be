@@ -6,12 +6,9 @@ import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.domain.user.repository.UserRepository;
 import com.business.i4_be.domain.user.security.UserDetailsImpl;
 import com.business.i4_be.global.jwt.JwtUtil;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,5 +77,4 @@ public class UserService {
         userRepository.save(user);
         return new UserResponse(user);
     }
-
 }
