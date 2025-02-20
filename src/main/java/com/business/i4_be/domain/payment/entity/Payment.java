@@ -4,13 +4,15 @@ import com.business.i4_be.domain.order.entity.Order;
 import com.business.i4_be.domain.payment.constant.PaymentStatus;
 import com.business.i4_be.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
 @Getter @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "p_payments")
 public class Payment extends BaseEntity {
 
