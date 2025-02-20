@@ -26,7 +26,6 @@ public class AuthService {
 
     @Transactional
     public SignupResponse signup(final SignupRequest request) {
-
         // 중복 검증
         validateDuplicateUser(request.getUsername());
 
@@ -46,7 +45,19 @@ public class AuthService {
         // DB 저장
         userRepository.save(user);
 
-        return new SignupResponse(user.getUserId());
+        // JWT 토큰 생성
+        String token = tokenProvider.generateTokens(user.getUsername(), user.getRole().name()).getAccessToken();
+
+        // 회원가입 응답 반환 (사용자 정보 + 토큰)
+        return new SignupResponse(
+                "회원가입이 완료되었습니다.",
+                user.getUserId(),
+                user.getUsername(),
+                user.getNickname(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                token
+        );
     }
 
     // 중복 검증

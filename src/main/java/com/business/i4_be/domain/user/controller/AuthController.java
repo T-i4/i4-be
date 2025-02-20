@@ -6,6 +6,7 @@ import com.business.i4_be.domain.user.dto.response.SignupResponse;
 import com.business.i4_be.domain.user.security.UserDetailsImpl;
 import com.business.i4_be.global.jwt.TokenDto;
 import com.business.i4_be.domain.user.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +21,7 @@ public class AuthController {
 
     // 회원 가입
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> signup(@RequestBody SignupRequest request) {
+    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest request) {
         SignupResponse response = authService.signup(request);
         return ResponseEntity.ok(response);
     }
