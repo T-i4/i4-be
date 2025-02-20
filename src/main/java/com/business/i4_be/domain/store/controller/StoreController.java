@@ -65,18 +65,14 @@ public class StoreController {
         return ResponseEntity.ok(stores);
     }
 
-    /**
-     * 가게 검색 (카테고리)
-     */
+    //가게 검색(카테고리)
     @GetMapping("/v1/stores/category")
     public ResponseEntity<List<StoreResDto>> getStoresByCategory(@RequestParam String category) {
         List<StoreResDto> stores = storeService.getStoresByCategory(category);
         return ResponseEntity.ok(stores);
     }
 
-    /**
-     * 가게 상태 변경 (OPEN / CLOSED)
-     */
+    //가게 상태변경(OPEN, CLOSE)
     @PatchMapping("/owner/v1/stores/{storeId}/status")
     public ResponseEntity<StoreResDto> updateStoreStatus(@PathVariable UUID storeId,
                                                          @RequestBody @Valid StoreStatusUpdateReqDto requestDto) {
@@ -84,18 +80,15 @@ public class StoreController {
         return ResponseEntity.ok(updatedStore);
     }
 
-    /**
-     * 가게 카테고리 변경
-     */
+    //가게 카테고리 변경
     @PatchMapping("/owner/v1/stores/{storeId}/category")
     public ResponseEntity<StoreResDto> updateStoreCategory(@PathVariable UUID storeId,
                                                            @RequestBody @Valid StoreCategoryUpdateReqDto requestDto) {
         StoreResDto updatedStore = storeService.updateStoreCategory(storeId, requestDto);
         return ResponseEntity.ok(updatedStore);
     }
-    /**
-     * 특정 가게의 주문 목록 조회 (가게 주인용)
-     */
+
+    //특정가게의 주문 내역 조회(OWNER용)
     @GetMapping("/owner/{storeId}/orders")
     public ResponseEntity<List<OrderResDto>> getOrdersByStore(@PathVariable UUID storeId) {
         List<OrderResDto> orders = storeService.getOrdersByStore(storeId);
