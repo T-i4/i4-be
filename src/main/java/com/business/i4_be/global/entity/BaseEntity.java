@@ -14,7 +14,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,6 +40,15 @@ public abstract class BaseEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Column(name = "deleted_by", length = 255)
+    @Column(name = "deleted_by", nullable = true, length = 255)
     private String deletedBy;
+
+    public void delete(String deletedBy) { //
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = deletedBy;
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null; //삭제 여부
+    }
 }
