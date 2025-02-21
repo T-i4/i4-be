@@ -55,4 +55,12 @@ public class UserController {
         UpdateUserRequest request = requestWrapper.getUser(); // User 객체 추출
         return ResponseEntity.ok(userService.updateUser(userDetails.getUser().getId(), request));
     }
+
+    // 주소 삭제
+    @DeleteMapping("/delete/me/address")
+    public ResponseEntity<UserResponse> deleteAddress(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UserResponse userResponse = userService.deleteUserAddress(userDetails.getUser().getId());
+        return ResponseEntity.ok(userResponse);
+    }
+
 }

@@ -39,8 +39,10 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private UserRole role;
 
-    private UserRole role = UserRole.USER; // 기본 권한 : USER
+    @Column(nullable = true)
+    private String address;
 
     public Long getId() {
         return userId;
@@ -64,6 +66,14 @@ public class User extends BaseEntity {
 
     public void updatePhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void updateAddress(String address) {
+        this.address = address;
+    }
+
+    public void deleteAddress() {
+        this.address = null;
     }
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

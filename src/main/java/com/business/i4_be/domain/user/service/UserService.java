@@ -77,7 +77,24 @@ public class UserService {
             user.updatePassword(passwordEncoder.encode(request.getPassword()));
         }
 
+        // 주소 update
+        if (request.getAddress() != null) {
+            user.updateAddress(request.getAddress());
+        }
+
         userRepository.save(user);
         return new UserResponse(user);
     }
+
+    // 주소 삭제
+    public UserResponse deleteUserAddress(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        user.deleteAddress();
+
+        userRepository.save(user);
+        return new UserResponse(user);
+    }
+
 }
