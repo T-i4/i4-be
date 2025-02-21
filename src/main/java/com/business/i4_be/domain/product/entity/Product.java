@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,9 @@ import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Entity
-@Table(name = "p_products")
+@Table(name = "p_products", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"product_name", "deleted_at"})
+})
 @Builder
 @SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,7 +39,7 @@ public class Product extends BaseEntity {
   @Column(columnDefinition = "uuid", nullable = false, updatable = false)
   private UUID productId;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private String productName;
 
   @Column(nullable = false)
