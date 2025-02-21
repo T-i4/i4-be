@@ -23,7 +23,6 @@ public class ProductResDto {
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   private static class ProductDto {
-
     private UUID productId;
     private String productName;
     private Integer quantity;
@@ -32,8 +31,10 @@ public class ProductResDto {
     private ProductStatus status;
     private String imageUrl;
 
-    public static ProductDto from(Product product) {
-      return ProductDto.builder()
+  }
+
+  public static ProductResDto from(UUID storeId, Product product) {
+    ProductDto productDto = ProductDto.builder()
           .productId(product.getProductId())
           .productName(product.getProductName())
           .quantity(product.getQuantity())
@@ -42,15 +43,10 @@ public class ProductResDto {
           .status(product.getStatus())
           .imageUrl(product.getImage())
           .build();
-    }
-  }
-
-  public static ProductResDto from(UUID storeId, Product product) {
-    ProductDto getProduct = ProductDto.from(product);
 
     return ProductResDto.builder()
         .storeId(storeId)
-        .productDto(getProduct)
+        .productDto(productDto)
         .build();
   }
 }

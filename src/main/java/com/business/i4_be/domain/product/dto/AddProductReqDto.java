@@ -2,6 +2,7 @@ package com.business.i4_be.domain.product.dto;
 
 import com.business.i4_be.domain.product.constants.ProductStatus;
 import com.business.i4_be.domain.product.entity.Product;
+import com.business.i4_be.domain.store.entity.Store;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -49,7 +50,7 @@ public class AddProductReqDto {
     private String imageUrl;
   }
 
-  public static Product toEntity(ProductDto productDto) {
+  public static Product toEntity( Store store, ProductDto productDto) {
     return Product.builder()
         .productName(productDto.getProductName())
         .quantity(productDto.getQuantity())
@@ -57,6 +58,7 @@ public class AddProductReqDto {
         .text(productDto.getText())
         .status(productDto.getStatus())
         .image(productDto.getImageUrl())
+        .store(store)
         .build();
   }
 }
