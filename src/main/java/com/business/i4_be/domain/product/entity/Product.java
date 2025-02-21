@@ -20,11 +20,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Entity
 @Table(name = "p_products")
 @Builder
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Product extends BaseEntity {
@@ -54,4 +56,28 @@ public class Product extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "store_id")
   private Store store;
+
+  public void setProductName(String productName) {
+    this.productName = productName;
+  }
+
+  public void setQuantity(Integer quantity) {
+    this.quantity = quantity;
+  }
+
+  public void setPrice(Integer price) {
+    this.price = price;
+  }
+
+  public void setText(String text) {
+    this.text = text;
+  }
+
+  public void setStatus(ProductStatus status) {
+    this.status = status;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
+  }
 }
