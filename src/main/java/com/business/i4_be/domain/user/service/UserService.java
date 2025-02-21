@@ -3,6 +3,7 @@ package com.business.i4_be.domain.user.service;
 import com.business.i4_be.domain.user.dto.request.UpdateUserRequest;
 import com.business.i4_be.domain.user.dto.request.UserUpdateWrapper;
 import com.business.i4_be.domain.user.dto.response.UserResponse;
+import com.business.i4_be.domain.user.dto.response.UserResponseWrapper;
 import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.domain.user.repository.UserRepository;
 import com.business.i4_be.domain.user.security.UserDetailsImpl;
@@ -31,27 +32,26 @@ public class UserService {
     }
 
     // 내 정보 조회
-    public UserResponse getMyInfo(User user) {
-        return new UserResponse(user);
+    public UserResponseWrapper getMyInfo(User user) {
+        return new UserResponseWrapper(new UserResponse(user));
     }
 
     // 모든 사용자 조회
-    public List<UserResponse> getAllUsers() {
+    public List<UserResponseWrapper> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(UserResponse::new)
+                .map(user -> new UserResponseWrapper(new UserResponse(user)))
                 .collect(Collectors.toList());
     }
 
-
     // 특정 유저 조회
-    public UserResponse getUserById(Long userId) {
+    public UserResponseWrapper getUserById(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
-        return new UserResponse(user);
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        return new UserResponseWrapper(new UserResponse(user));
     }
 
     // 정보 수정
-    public UserResponse updateUser(Long userId, UpdateUserRequest request) {
+    public UserResponseWrapper updateUser(Long userId, UpdateUserRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -83,18 +83,17 @@ public class UserService {
         }
 
         userRepository.save(user);
-        return new UserResponse(user);
+        return new UserResponseWrapper(new UserResponse(user));
     }
 
     // 주소 삭제
-    public UserResponse deleteUserAddress(Long userId) {
+    public UserResponseWrapper deleteUserAddress(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         user.deleteAddress();
 
         userRepository.save(user);
-        return new UserResponse(user);
+        return new UserResponseWrapper(new UserResponse(user));
     }
-
 }
