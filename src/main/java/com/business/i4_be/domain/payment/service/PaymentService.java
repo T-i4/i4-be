@@ -8,6 +8,8 @@ import com.business.i4_be.domain.payment.dto.response.PaymentListResDto;
 import com.business.i4_be.domain.payment.dto.response.PaymentResDto;
 import com.business.i4_be.domain.payment.entity.Payment;
 import com.business.i4_be.domain.payment.repository.PaymentRepository;
+import com.business.i4_be.global.exception.CustomException;
+import com.business.i4_be.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +41,7 @@ public class PaymentService {
     // 유저의 특정 결제 기록 조회 (단건)
     public PaymentResDto getUserPaymentDetail(Long userId, UUID paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
-            .orElseThrow(() -> new IllegalArgumentException("결제 정보가 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND));
         return PaymentResDto.of(userId, payment);
     }
 
@@ -47,7 +49,7 @@ public class PaymentService {
     @Transactional
     public PaymentResDto createPayment(Long userId, PaymentReqDto request) {
         Order order = orderRepository.findById(request.getOrderId())
-            .orElseThrow(() -> new IllegalArgumentException("주문 정보가 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND_FOR_PAYMENT));
 
         Payment payment = Payment.builder()
             .paymentStatus(PaymentStatus.COMPLETED)
@@ -64,7 +66,7 @@ public class PaymentService {
     @Transactional
     public PaymentResDto cancelPayment(Long userId, UUID paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
-            .orElseThrow(() -> new IllegalArgumentException("결제 정보가 없습니다."));
+            .orElseThrow(() -> new CustomException(ErrorCode.PAYMENT_NOT_FOUND));
 
         // payment의 상태를 취소로 변경
         payment.setPaymentStatus(PaymentStatus.CANCELLED);

@@ -45,6 +45,12 @@ public enum ErrorCode {
   PRODUCT_NOT_FOUND(3000, NOT_FOUND.value(), "상품이 존재하지 않습니다."),
 
   /**
+   * Payment 6000번
+   */
+  PAYMENT_NOT_FOUND(6000, NOT_FOUND.value(), "결제 정보가 없습니다."),
+  ORDER_NOT_FOUND_FOR_PAYMENT(6000, NOT_FOUND.value(), "주문 정보가 없습니다."),
+
+  /**
    * Cart 7000번
    */
   NOT_ENOUGH_QUANTITY(7000, BAD_REQUEST.value(), "상품 수량이 부족합니다."),
