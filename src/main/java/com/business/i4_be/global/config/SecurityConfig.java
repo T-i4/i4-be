@@ -1,5 +1,6 @@
 package com.business.i4_be.global.config;
 
+import com.business.i4_be.global.exception.CustomAccessDeniedHandler;
 import com.business.i4_be.global.exception.ExceptionHandlerFilter;
 import com.business.i4_be.global.jwt.JwtFilter;
 import com.business.i4_be.global.jwt.JwtUtil;
@@ -21,6 +22,7 @@ public class SecurityConfig {
     private final CorsConfig corsConfig;
     private final JwtUtil jwtUtil;
     private final TokenProvider tokenProvider;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,28 +35,37 @@ public class SecurityConfig {
 
                         // 조회
                         .requestMatchers("/api/v1/users/me").authenticated()
-                        .requestMatchers("/api/v1/users/all").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN")
-                        .requestMatchers("/api/v1/users/{userId}").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN")
+                        .requestMatchers("/api/v1/users/all").hasAnyAuthority("MASTER", "ADMIN")
+                        .requestMatchers("/api/v1/users/{userId}").hasAnyAuthority("MASTER", "ADMIN")
 
                         // 수정
                         .requestMatchers("/api/v1/users/update/me").authenticated()
 
                         // 탈퇴
                         .requestMatchers("/api/v1/delete/me").authenticated()
-                        .requestMatchers("/api/v1/delete/{userId}").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN")
+                        .requestMatchers("/api/v1/delete/{userId}").hasAnyAuthority("MASTER", "ADMIN")
 
                         // --- 장바구니 ----
                         .requestMatchers("/api/v1/cart/**").authenticated()
                         .requestMatchers("/api/v1/cart/**")
-                        .hasAnyAuthority("ROLE_USER", "ROLE_MASTER", "ROLE_ADMIN")
+                        .hasAnyAuthority("USER", "MASTER", "ADMIN")
 
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class) // CORS 필터
-                .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class) // 예외 필터
-                .addFilterAfter(new JwtFilter(jwtUtil, tokenProvider), UsernamePasswordAuthenticationFilter.class) // 🔥 JwtFilter 실행 순서 변경
-                .formLogin(form -> form.disable()) // 기본 로그인 폼 비활성화
-                .httpBasic(httpBasic -> httpBasic.disable()); // HTTP Basic 인증 비활성화
+
+                // 🔹 Custom AccessDeniedHandler 추가
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(customAccessDeniedHandler)
+                )
+
+                // CORS -> 예외처리 -> JWT 순서로 필터 적용
+                .addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil, tokenProvider), UsernamePasswordAuthenticationFilter.class)
+
+                // 기본 로그인 폼, HTTP Basic 비활성화
+                .formLogin(form -> form.disable())
+                .httpBasic(httpBasic -> httpBasic.disable());
 
         return http.build();
     }

@@ -1,9 +1,12 @@
 package com.business.i4_be.domain.user.controller;
 
 import com.business.i4_be.domain.user.dto.request.UpdateUserRequest;
+import com.business.i4_be.domain.user.dto.request.UserUpdateWrapper;
 import com.business.i4_be.domain.user.dto.response.UserResponse;
 import com.business.i4_be.domain.user.security.UserDetailsImpl;
 import com.business.i4_be.domain.user.service.UserService;
+import com.business.i4_be.global.exception.CustomException;
+import com.business.i4_be.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,8 +23,9 @@ public class UserController {
 
     // 내 정보 조회
     @GetMapping("/me")
-    public UserResponse getMyInfo() {
-        return userService.getMyInfo();
+    public ResponseEntity<UserResponse> getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UserResponse userResponse = userService.getMyInfo(userDetails.getUser());
+        return ResponseEntity.ok(userResponse);
     }
 
     // 모든 유저 조회
@@ -40,8 +44,15 @@ public class UserController {
     // 정보 수정
     @PutMapping("/update/me")
     public ResponseEntity<UserResponse> updateUser(
-            @RequestBody UpdateUserRequest request,
+            @RequestBody UserUpdateWrapper requestWrapper,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        // user 필드가 없으면 예외 처리
+        if (requestWrapper.getUser() == null) {
+            throw new CustomException(ErrorCode.INVALID_REQUEST);
+        }
+
+        UpdateUserRequest request = requestWrapper.getUser(); // User 객체 추출
         return ResponseEntity.ok(userService.updateUser(userDetails.getUser().getId(), request));
     }
 }

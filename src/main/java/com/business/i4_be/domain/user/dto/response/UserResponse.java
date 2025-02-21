@@ -18,6 +18,6 @@ public class UserResponse {
         this.nickname = user.getNickname();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
-        this.role = user.getRole().toString();
+        this.role = user.getRole().name();
     }
 }

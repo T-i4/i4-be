@@ -2,7 +2,11 @@ package com.business.i4_be.domain.user.service;
 
 import com.business.i4_be.domain.user.dto.request.SigninRequest;
 import com.business.i4_be.domain.user.dto.request.SignupRequest;
+import com.business.i4_be.domain.user.dto.request.UserSigninRequest;
+import com.business.i4_be.domain.user.dto.request.UserSignupRequest;
+import com.business.i4_be.domain.user.dto.response.SigninResponse;
 import com.business.i4_be.domain.user.dto.response.SignupResponse;
+import com.business.i4_be.domain.user.dto.response.UserResponse;
 import com.business.i4_be.domain.user.entity.UserRole;
 import com.business.i4_be.domain.user.security.UserDetailsImpl;
 import com.business.i4_be.global.jwt.TokenDto;
@@ -25,9 +29,26 @@ public class AuthService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public SignupResponse signup(final SignupRequest request) {
+    public SignupResponse signup(final UserSignupRequest usersignupRequest) {
+
+        // user 필드
+        SignupRequest request = usersignupRequest.getUser();
+
         // 중복 검증
         validateDuplicateUser(request.getUsername());
+
+        // 역할 검증 (USER 또는 OWNER만 가능)
+        UserRole role;
+
+        try {
+            role = UserRole.valueOf(request.getRole().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("유효하지 않은 역할입니다. USER 또는 OWNER만 가능합니다.");
+        }
+
+        if (role == UserRole.ADMIN || role == UserRole.MASTER) {
+            throw new IllegalArgumentException("관리자 계정은 회원가입할 수 없습니다.");
+        }
 
         // 비밀번호 암호화
         String encodePassword = passwordEncoder.encode(request.getPassword());
@@ -39,25 +60,14 @@ public class AuthService {
                 .password(encodePassword)
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
-                .role(UserRole.USER)
+                .role(role)
                 .build();
 
         // DB 저장
         userRepository.save(user);
 
-        // JWT 토큰 생성
-        String token = tokenProvider.generateTokens(user.getUsername(), user.getRole().name()).getAccessToken();
-
-        // 회원가입 응답 반환 (사용자 정보 + 토큰)
-        return new SignupResponse(
-                "회원가입이 완료되었습니다.",
-                user.getUserId(),
-                user.getUsername(),
-                user.getNickname(),
-                user.getEmail(),
-                user.getPhoneNumber(),
-                token
-        );
+        // 회원가입 응답 반환
+        return new SignupResponse("회원가입이 완료되었습니다.", user);
     }
 
     // 중복 검증
@@ -67,16 +77,20 @@ public class AuthService {
         }
     }
 
-    public TokenDto signin(SigninRequest signinRequest) {
-        User user = userRepository.findByUsername(signinRequest.getUsername())
+    public SigninResponse signin(UserSigninRequest userSigninRequest) {
+        // user 필드
+        SigninRequest request = userSigninRequest.getUser();
+
+        User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new BadCredentialsException("아이디 또는 비밀번호가 올바르지 않습니다."));
 
-        if (!passwordEncoder.matches(signinRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        String authorities = user.getRole().name();
-        return tokenProvider.generateTokens(user.getUsername(), authorities);
+        TokenDto tokenDto = tokenProvider.generateTokens(user.getUsername(), user.getRole().name());
+
+        return new SigninResponse("로그인 성공", tokenDto, user);
     }
 
     // 탈퇴

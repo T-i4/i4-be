@@ -19,11 +19,9 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    // Token 유효성 검사, 사용자 정보 추출
     private final TokenProvider tokenProvider;
-    // HTTP 요청 헤더에서 Token 찾을 때 사용하는 Key 값
+
     private static final String AUTHORIZATION_HEADER = "Authorization";
-    // JWT 앞에 붙는 식별자
     private static final String BEARER_PREFIX = "Bearer ";
 
     // JWT 검증 필터
@@ -40,14 +38,17 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = resolveToken(request);
 
-        if (token != null && jwtUtil.validateToken(token).equals(TokenStatus.VALID)) {
+        // Token 이 유효하면 SecurityContext 에 저장
+        if (StringUtils.hasText(token) && jwtUtil.validateToken(token) == TokenStatus.VALID) {
             Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("SecurityContext에 '{}' 인증 정보를 저장했습니다.", authentication.getName());
+        } else {
+            log.warn("유효한 JWT 토큰이 없습니다. URI: {}", requestURI);
         }
 
         filterChain.doFilter(request, response);
     }
-
 
     // Header 에서 JWT 를 추출
     private String resolveToken(HttpServletRequest request) {
