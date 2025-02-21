@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -36,9 +37,21 @@ public class Cart extends BaseEntity {
   @Column(nullable = false)
   private Integer totalPrice;
 
+  private UUID storeId;
+
   @OneToOne
+  @JoinColumn(name = "user_id")
   private User user;
 
-  @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "cart")
-  private List<ProductCart> productCarts = new ArrayList<>();
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "cart")
+  @Builder.Default private List<ProductCart> productCarts = new ArrayList<>();
+
+  public Integer updateTotalPrice(Integer price) {
+    this.totalPrice += price;
+    return totalPrice;
+  }
+
+  public void updateStoreId(UUID storeId) {
+    this.storeId = storeId;
+  }
 }
