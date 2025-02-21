@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -51,5 +52,11 @@ public class UserController {
     @DeleteMapping("/delete/me/address")
     public ResponseEntity<UserResponseWrapper> deleteAddress(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(userService.deleteUserAddress(userDetails.getUser().getId()));
+    }
+
+    // 회원 탈퇴
+    @DeleteMapping("/delete/me")
+    public ResponseEntity<Map<String, String>> deleteMyAccount(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(userService.deleteMyAccount(userDetails.getUser().getId()));
     }
 }

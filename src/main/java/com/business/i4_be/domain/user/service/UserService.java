@@ -15,7 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -95,5 +97,17 @@ public class UserService {
 
         userRepository.save(user);
         return new UserResponseWrapper(new UserResponse(user));
+    }
+
+    // 회원 탈퇴
+    public Map<String, String> deleteMyAccount(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        userRepository.delete(user);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "탈퇴되었습니다.");
+        return response;
     }
 }
