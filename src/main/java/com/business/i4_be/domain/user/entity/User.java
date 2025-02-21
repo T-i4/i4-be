@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -43,14 +46,6 @@ public class User extends BaseEntity {
         return userId;
     }
 
-    // 정보 수정
-    public void updateUserInfo(String username, String email, String nickname, String phoneNumber) {
-        this.username = username;
-        this.email = email;
-        this.nickname = nickname;
-        this.phoneNumber = phoneNumber;
-    }
-
     public void updateUsername(String username) {
         this.username = username;
     }
@@ -68,6 +63,16 @@ public class User extends BaseEntity {
     }
 
     public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Address> addresses = new ArrayList<>();
+
+    public void updateUserInfo(String username, String email, String nickname, String phoneNumber) {
+        this.username = username;
+        this.email = email;
+        this.nickname = nickname;
         this.phoneNumber = phoneNumber;
     }
 }
