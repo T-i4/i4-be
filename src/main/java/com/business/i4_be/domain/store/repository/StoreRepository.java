@@ -11,12 +11,6 @@ import java.util.UUID;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, UUID> {
-
-    List<Store> findAll();
-
-    @Override
-    Optional<Store> findById(UUID uuid);
-
     List<Store> findByCategory(StoreCategory category);
 
 
@@ -25,5 +19,21 @@ public interface StoreRepository extends JpaRepository<Store, UUID> {
 
 
     boolean existsByStoreName(String storeName);
+
+
+
+    //가게 단건 조회 (ALL)
+    @Override
+    Optional<Store> findById(UUID storeId);
+
+    //가게 단건 조회(OWNER)
+    Optional<Store>findByStoreIdAndUserId(UUID storeId, Long userId);
+    //가게 목록 조회(ALL)
+    List<Store> findAll();
+    //가게 목록 조회(OWNER)
+    List<Store> findAllByAndUserId(Long userId);
+
+
+
 
 }
