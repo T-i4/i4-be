@@ -21,7 +21,7 @@ public class AddProductResDto {
   @Builder
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
-  private static class ProductDto {
+  public static class ProductDto {
     private UUID productId;
     private String productName;
     private Integer quantity;

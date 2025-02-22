@@ -16,10 +16,10 @@ public class UpdateProductReqDto {
   private UUID storeId;
 
   @Valid
-  private Product product;
+  private ProductDto productDto;
 
   @Getter
-  public static class Product {
+  public static class ProductDto {
 
     @NotBlank(message = "상품명은 필수입니다.")
     private String productName;

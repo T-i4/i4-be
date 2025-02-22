@@ -1,6 +1,7 @@
 package com.business.i4_be.domain.product.repository;
 
 import com.business.i4_be.domain.product.entity.Product;
+import com.business.i4_be.domain.store.entity.Store;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,7 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
   List<Product> findByStore_storeIdAndProductNameContaining(UUID storeId, String keyword);
 
-  List<Product> findByStore_storeId(UUID storeId);
+  List<Product> findByStore(Store store);
 
   boolean existsByProductName(String productName);
 

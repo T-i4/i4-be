@@ -14,17 +14,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Entity
-@Table(name = "p_products")
+@Table(name = "p_products", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"product_name", "deleted_at"})
+})
 @Builder
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Product extends BaseEntity {
@@ -34,7 +39,7 @@ public class Product extends BaseEntity {
   @Column(columnDefinition = "uuid", nullable = false, updatable = false)
   private UUID productId;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private String productName;
 
   @Column(nullable = false)
@@ -54,4 +59,28 @@ public class Product extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "store_id")
   private Store store;
+
+  public void setProductName(String productName) {
+    this.productName = productName;
+  }
+
+  public void setQuantity(Integer quantity) {
+    this.quantity = quantity;
+  }
+
+  public void setPrice(Integer price) {
+    this.price = price;
+  }
+
+  public void setText(String text) {
+    this.text = text;
+  }
+
+  public void setStatus(ProductStatus status) {
+    this.status = status;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
+  }
 }

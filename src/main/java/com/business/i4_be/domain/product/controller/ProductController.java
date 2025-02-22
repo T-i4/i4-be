@@ -9,11 +9,13 @@ import com.business.i4_be.domain.product.dto.ProductsResDto;
 import com.business.i4_be.domain.product.dto.UpdateProductReqDto;
 import com.business.i4_be.domain.product.dto.UpdateProductResDto;
 import com.business.i4_be.domain.product.service.ProductService;
+import com.business.i4_be.domain.user.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,25 +36,30 @@ public class ProductController {
 
   @PostMapping
   public ResponseEntity<AddProductResDto> addProduct(
-      @RequestParam("userId") Long userId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
       @Valid @RequestBody AddProductReqDto requestDto) {
-    return ResponseEntity.status(CREATED).body(productService.addProduct(userId, requestDto));
+    return ResponseEntity.status(CREATED).
+        body(productService.addProduct(userDetails.getUser().getId(), requestDto));
   }
 
   @PutMapping("/{productId}")
   public ResponseEntity<UpdateProductResDto> updateProduct(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
       @PathVariable("productId") UUID productId,
       @Valid @RequestBody UpdateProductReqDto requestDto
   ) {
-    return ResponseEntity.ok().body(productService.updateProduct(productId, requestDto));
+    return ResponseEntity.ok().body(
+        productService.updateProduct(userDetails.getUser().getId(), productId, requestDto));
   }
 
   @DeleteMapping("/{productId}")
   public ResponseEntity<Void> deleteProduct(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
       @PathVariable("productId") UUID productId,
       @RequestParam("storeId") UUID storeId
   ) {
-    return ResponseEntity.ok().body(productService.deleteProduct(storeId, productId));
+    productService.deleteProduct(userDetails.getUser().getId(), storeId, productId);
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/{productId}")
