@@ -96,7 +96,10 @@ public class StoreService {
 
     //가게 조회(목록 : OWNER)
     public StoreResDto.StoreListResDto  getAllStoresForOwner(Long userId) {
-        List<Store> stores = storeRepository.findAllByAndUserId(userId);
+        List<Store> stores = storeRepository.findAllByUserId(userId);
+        if(stores.isEmpty()){
+            throw new CustomException(ErrorCode.NO_STORE_REGISTERED);
+        }
         return StoreResDto.StoreListResDto.fromEntityList(stores);
     }
 

@@ -31,7 +31,7 @@ public interface StoreRepository extends JpaRepository<Store, UUID> {
     //가게 목록 조회(ALL)
     List<Store> findAll();
     //가게 목록 조회(OWNER)
-    List<Store> findAllByAndUserId(Long userId);
+    List<Store> findAllByUserId(Long userId);
 
 
 
