@@ -29,4 +29,7 @@ public class SignupRequest {
 
     @NotBlank
     private String phoneNumber;
+
+    @NotBlank(message = "고객이면 USER 를, 가게 사장님이면 OWNER 를 입력해주세요.")
+    private String role;
 }

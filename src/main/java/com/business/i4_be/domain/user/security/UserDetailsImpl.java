@@ -14,7 +14,7 @@ public class UserDetailsImpl implements UserDetails {
 
     public UserDetailsImpl(User user, String role) {
         this.user = user;
-        this.authority = new SimpleGrantedAuthority("ROLE_" + role);
+        this.authority = new SimpleGrantedAuthority(role);
     }
 
     public User getUser() {
