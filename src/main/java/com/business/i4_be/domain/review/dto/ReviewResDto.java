@@ -27,7 +27,7 @@ public class ReviewResDto {
 //                    .storeId(review.getStore().getStoreId())
                     .storeId(review.getStore() != null ? review.getStore().getStoreId() : null)
 //                    .userId(review.getUser().getUserId())
-                    .userId(review.getUser() != null ? review.getUser().getUserId() : null)  // ✅ Null 체크 추가
+                    .userId(review.getUser() != null ? review.getUser().getUserId() : null)
                     .rating(review.getRating())
                     .text(review.getText())
                     .build();
