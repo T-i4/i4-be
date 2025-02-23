@@ -7,9 +7,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateProductReqDto {
 
   @NotNull
@@ -19,6 +25,9 @@ public class UpdateProductReqDto {
   private ProductDto productDto;
 
   @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class ProductDto {
 
     @NotBlank(message = "상품명은 필수입니다.")
