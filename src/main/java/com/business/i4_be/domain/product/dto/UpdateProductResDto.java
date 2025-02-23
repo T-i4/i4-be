@@ -1,6 +1,7 @@
 package com.business.i4_be.domain.product.dto;
 
 import com.business.i4_be.domain.product.constants.ProductStatus;
+import com.business.i4_be.domain.product.entity.Product;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,13 +15,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateProductResDto {
 
-  private Product product;
+  private ProductDto productDto;
 
   @Getter
   @Builder
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
-  private static class Product {
+  public static class ProductDto {
     private UUID productId;
     private String productName;
     private Integer quantity;
@@ -30,8 +31,8 @@ public class UpdateProductResDto {
     private String imageUrl;
   }
 
-  public static UpdateProductResDto from(com.business.i4_be.domain.product.entity.Product product) {
-    UpdateProductResDto.Product updateProduct = UpdateProductResDto.Product.builder()
+  public static UpdateProductResDto from(Product product) {
+    ProductDto updateProduct = ProductDto.builder()
         .productId(product.getProductId())
         .productName(product.getProductName())
         .quantity(product.getQuantity())
@@ -42,7 +43,7 @@ public class UpdateProductResDto {
         .build();
 
     return UpdateProductResDto.builder()
-        .product(updateProduct)
+        .productDto(updateProduct)
         .build();
   }
 }

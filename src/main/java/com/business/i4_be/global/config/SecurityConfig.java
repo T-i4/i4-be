@@ -37,7 +37,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/all").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN")
                         .requestMatchers("/api/v1/users/{userId}").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN")
 
-
                         // 수정
                         .requestMatchers("/api/v1/users/update/me").authenticated()
 
@@ -69,6 +68,12 @@ public class SecurityConfig {
                         .hasAnyAuthority("ROLE_USER", "ROLE_MASTER","ROLE_OWNER","ROLE_ADMIN")
                         .requestMatchers("/api/v1/stores/**").authenticated()
                        .anyRequest().authenticated()
+                        // Product
+                        .requestMatchers("/api/owner/v1/products").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN", "ROLE_OWNER")
+                        .requestMatchers(HttpMethod.GET, "api/v1/products/**","/api/v1/products").permitAll()
+                        .requestMatchers("/api/v1/products/**","/api/v1/products").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN", "ROLE_OWNER")
+
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class) // CORS 필터
                 .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class) // 예외 필터
