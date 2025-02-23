@@ -2,6 +2,7 @@ package com.business.i4_be.global.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -65,7 +66,7 @@ public enum ErrorCode {
   /**
    * Security 8000번
    */
-  ACCESS_DENIED(8000, FORBIDDEN.value(), "권한이 없습니다.");
+  ACCESS_DENIED(8000, HttpStatus.FORBIDDEN.value(), "권한이 없습니다.");
 
 
   private final int code; // 도메인 관리 코드
