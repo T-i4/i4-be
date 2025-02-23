@@ -2,12 +2,16 @@ package com.business.i4_be.domain.user.controller;
 
 import com.business.i4_be.domain.user.dto.request.SigninRequest;
 import com.business.i4_be.domain.user.dto.request.SignupRequest;
+import com.business.i4_be.domain.user.dto.request.UserSigninRequest;
+import com.business.i4_be.domain.user.dto.request.UserSignupRequest;
+import com.business.i4_be.domain.user.dto.response.SigninResponse;
 import com.business.i4_be.domain.user.dto.response.SignupResponse;
 import com.business.i4_be.domain.user.security.UserDetailsImpl;
 import com.business.i4_be.global.jwt.TokenDto;
 import com.business.i4_be.domain.user.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -21,16 +25,19 @@ public class AuthController {
 
     // 회원 가입
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest request) {
-        SignupResponse response = authService.signup(request);
+    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody UserSignupRequest userSignupRequest) {
+        SignupResponse response = authService.signup(userSignupRequest);
         return ResponseEntity.ok(response);
     }
 
     // 로그인
     @PostMapping("/signin")
-    public ResponseEntity<TokenDto> signin(@RequestBody SigninRequest signinRequest) {
-        TokenDto tokenDto = authService.signin(signinRequest);
-        return ResponseEntity.ok(tokenDto);
+    public ResponseEntity<SigninResponse> signin(@RequestBody UserSigninRequest userSigninRequest) {
+        SigninResponse response = authService.signin(userSigninRequest);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + response.getAccessToken())
+                .body(response);
     }
 
     // 탈퇴

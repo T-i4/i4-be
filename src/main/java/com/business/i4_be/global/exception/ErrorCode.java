@@ -1,10 +1,9 @@
 package com.business.i4_be.global.exception;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import static org.springframework.http.HttpStatus.*;
 
 @Getter
 @RequiredArgsConstructor
@@ -15,6 +14,8 @@ public enum ErrorCode {
    * Bean Validation 같은 공통 예외는 0
    */
   USER_NOT_FOUND(1000, NOT_FOUND.value(), "유저가 존재하지 않습니다."),
+  ROLE_UPDATE_NOT_ALLOWED(1000, BAD_REQUEST.value(), "권한은 변경할 수 없습니다."),
+  INVALID_REQUEST(1000, BAD_REQUEST.value(), "잘못된 요청입니다."),
 
   /** Store : 2000
    * */
@@ -54,7 +55,12 @@ public enum ErrorCode {
    * Cart 7000번
    */
   NOT_ENOUGH_QUANTITY(7000, BAD_REQUEST.value(), "상품 수량이 부족합니다."),
-  ALREADY_DIFFERENT_STORE_PRODUCT(7000, BAD_REQUEST.value(), "다른 가게 상품이 존재합니다.");
+  ALREADY_DIFFERENT_STORE_PRODUCT(7000, BAD_REQUEST.value(), "다른 가게 상품이 존재합니다."),
+
+  /**
+   * Security 8000번
+   */
+  ACCESS_DENIED(8000, FORBIDDEN.value(), "권한이 없습니다.");
 
   private final int code; // 도메인 관리 코드
   private final int status;

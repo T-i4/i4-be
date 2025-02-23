@@ -23,10 +23,15 @@ public class Address {
     @Column(name = "address_id", updatable = false, nullable = false)
     private UUID addressId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "address", nullable = false, length = 255)
     private String address;
+
+    // 주소 수정 메서드
+    public void updateAddress(String newAddress) {
+        this.address = newAddress;
+    }
 }
