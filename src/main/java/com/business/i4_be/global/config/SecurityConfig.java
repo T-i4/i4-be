@@ -62,18 +62,33 @@ public class SecurityConfig {
                         .requestMatchers("/api/owner/v1/stores/**").authenticated()
 
 
-
-
                         .requestMatchers("/api/v1/stores/**")
                         .hasAnyAuthority("ROLE_USER", "ROLE_MASTER","ROLE_OWNER","ROLE_ADMIN")
                         .requestMatchers("/api/v1/stores/**").authenticated()
-                       .anyRequest().authenticated()
+
+
                         // Product
                         .requestMatchers("/api/owner/v1/products").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN", "ROLE_OWNER")
                         .requestMatchers(HttpMethod.GET, "api/v1/products/**","/api/v1/products").permitAll()
                         .requestMatchers("/api/v1/products/**","/api/v1/products").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN", "ROLE_OWNER")
 
+
+                        //리뷰
+
+                        .requestMatchers("/api/v1/reviews/orders/{orderId}")
+                        .hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/api/v1/reviews/{reviewId}")
+                        .hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/api/v1/reviews/{reviewId}")
+                        .hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_MASTER")
+                        .requestMatchers("/api/v1/reviews/users/{userId}")
+                        .hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_MASTER")
+                        .requestMatchers("/api/v1/stores/{storeId}/reviews")
+                        .hasAnyAuthority("ROLE_USER", "ROLE_MASTER","ROLE_OWNER","ROLE_ADMIN")
+                        .requestMatchers("/api/v1/reviews/**").authenticated()
                         .anyRequest().authenticated()
+
+
                 )
                 .addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class) // CORS 필터
                 .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class) // 예외 필터

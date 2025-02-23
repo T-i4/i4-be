@@ -16,6 +16,9 @@ public enum ErrorCode {
    */
   USER_NOT_FOUND(1000, NOT_FOUND.value(), "유저가 존재하지 않습니다."),
   FORBIDDEN(1000, BAD_REQUEST.value(),"접근 금지" ),
+  ROLE_UPDATE_NOT_ALLOWED(1000, BAD_REQUEST.value(), "권한은 변경할 수 없습니다."),
+  INVALID_REQUEST(1000, BAD_REQUEST.value(), "잘못된 요청입니다."),
+
   /** Store : 2000
    * */
   STORE_NOT_FOUND(2000, NOT_FOUND.value(), "가게가 존재하지 않습니다."),
