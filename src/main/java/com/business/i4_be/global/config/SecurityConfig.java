@@ -7,6 +7,7 @@ import com.business.i4_be.global.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/all").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN")
                         .requestMatchers("/api/v1/users/{userId}").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN")
 
+
                         // 수정
                         .requestMatchers("/api/v1/users/update/me").authenticated()
 
@@ -48,7 +50,25 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/cart/**")
                         .hasAnyAuthority("ROLE_USER", "ROLE_MASTER", "ROLE_ADMIN")
 
-                        .anyRequest().authenticated()
+
+                        // --- 가게 ----
+                        .requestMatchers(HttpMethod.POST,"/api/owner/v1/stores")
+                        .hasAnyAuthority("ROLE_ADMIN","ROLE_MASTER")
+                        .requestMatchers(HttpMethod.DELETE,"/api/owner/v1/stores/{storeId}")
+                        .hasAnyAuthority("ROLE_MASTER")
+                        .requestMatchers(HttpMethod.PUT,"/api/owner/v1/stores/{storeId}")
+                        .hasAnyAuthority("ROLE_OWNER","ROLE_ADMIN","ROLE_MASTER")
+                        .requestMatchers(HttpMethod.PATCH,"/api/owner/v1/{storeId}/status","/api/owner/v1/{storeId}/category")
+                        .hasAnyAuthority("ROLE_OWNER","ROLE_ADMIN","ROLE_MASTER")
+                        .requestMatchers("/api/owner/v1/stores/**").authenticated()
+
+
+
+
+                        .requestMatchers("/api/v1/stores/**")
+                        .hasAnyAuthority("ROLE_USER", "ROLE_MASTER","ROLE_OWNER","ROLE_ADMIN")
+                        .requestMatchers("/api/v1/stores/**").authenticated()
+                       .anyRequest().authenticated()
                 )
                 .addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class) // CORS 필터
                 .addFilterBefore(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class) // 예외 필터

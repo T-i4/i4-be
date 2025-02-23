@@ -11,6 +11,7 @@ import com.business.i4_be.domain.store.dto.StoreResDto;
 import com.business.i4_be.domain.store.dto.StoreStatusUpdateReqDto;
 import com.business.i4_be.domain.store.entity.Store;
 import com.business.i4_be.domain.store.repository.StoreRepository;
+import com.business.i4_be.domain.store.repository.StoreRepositoryCustom;
 import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.domain.user.entity.UserRole;
 import com.business.i4_be.domain.user.repository.UserRepository;
@@ -18,6 +19,8 @@ import com.business.i4_be.global.exception.CustomException;
 import com.business.i4_be.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,14 +36,15 @@ public class StoreService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final StoreRepositoryCustom storeRepositoryCustom;
     //가게 등록
     @Transactional
     public StoreResDto createStore(StoreReqDto reqDto,Long userId) {
 
-        // 🔍 userId로 사용자 정보 가져오기
+        // userId로 사용자 정보 가져오기
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        // 🔥 [추가] MASTER 권한이 아니면 예외 발생
+        // MASTER 권한이 아니면 예외 발생
         if (!user.getRole().equals(UserRole.MASTER)){
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
@@ -81,6 +85,7 @@ public class StoreService {
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
         return StoreResDto.fromEntity(store);
     }
+
     //가게 조회(단건 : OWNER)
     public StoreResDto getStoreForOwner(UUID storeId, Long userId) {
         Store store = storeRepository.findByStoreIdAndUserId(storeId, userId)
@@ -89,20 +94,17 @@ public class StoreService {
     }
 
     //가게 조회(목록 : ALL)
-    public StoreResDto.StoreListResDto getAllStores( Long userId) {
-        List<Store> stores = storeRepository.findAll();
-        return StoreResDto.StoreListResDto.fromEntityList(stores);
+    public Page<StoreResDto> getAllStores(Long userId, Pageable pageable) {
+        return storeRepositoryCustom.findAllWithPagination(userId, pageable)
+                .map(StoreResDto::fromEntity);
     }
+
 
     //가게 조회(목록 : OWNER)
-    public StoreResDto.StoreListResDto  getAllStoresForOwner(Long userId) {
-        List<Store> stores = storeRepository.findAllByUserId(userId);
-        if(stores.isEmpty()){
-            throw new CustomException(ErrorCode.NO_STORE_REGISTERED);
-        }
-        return StoreResDto.StoreListResDto.fromEntityList(stores);
+    public Page<StoreResDto> getAllStoresForOwner(Long userId, Pageable pageable) {
+        return storeRepositoryCustom.findByUserIdWithPagination(userId, pageable)
+                .map(StoreResDto::fromEntity);
     }
-
 
 
     //가게 수정
@@ -129,29 +131,28 @@ public class StoreService {
             throw new CustomException(ErrorCode.STORE_ALREADY_DELETED);
         }
 
-        store.delete("test_user");
+        store.delete(userId.toString());
     }
 
-    //가게 검색(이름)
-    public List<StoreResDto> searchStoresByName(String keyword, Long userId) {
-        List<Store> stores = storeRepository.findByStoreNameContaining(keyword);
-        return stores.stream()
-                .map(StoreResDto::fromEntity)
-                .toList();
+    //가게 검색(이름, 페이징 적용)
+    public Page<StoreResDto> searchStoresByName(String keyword, Long userId, Pageable pageable) {
+        return storeRepositoryCustom.findByKeywordWithPagination(keyword, userId, pageable)
+                .map(StoreResDto::fromEntity);
     }
 
-    //가게 검색(카테고리)
-    public List<StoreResDto> getStoresByCategory(String categoryName, Long userId) {
-        if (!StoreCategory.isValidCategory(categoryName)) {
+
+    // 가게 검색 (카테고리 기준, 페이징 적용)
+    public Page<StoreResDto> getStoresByCategory(String categoryName, Long userId, Pageable pageable) {
+        StoreCategory category;
+        try {
+            category = StoreCategory.valueOf(categoryName.toUpperCase());
+        } catch (IllegalArgumentException e) {
             throw new CustomException(ErrorCode.INVALID_CATEGORY);
         }
-
-        StoreCategory category = StoreCategory.valueOf(categoryName.toUpperCase());
-        List<Store> stores = storeRepository.findByCategory(category);
-        return stores.stream()
-                .map(StoreResDto::fromEntity)
-                .toList();
+        return storeRepositoryCustom.findByCategoryWithPagination(category, userId, pageable)
+                .map(StoreResDto::fromEntity);
     }
+
 
     //가게 상태 변경 (OPEN / CLOSED)
     @Transactional

@@ -6,6 +6,9 @@ import com.business.i4_be.domain.store.service.StoreService;
 import com.business.i4_be.domain.user.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -52,10 +55,11 @@ public class StoreOwnerController {
 
     //가게 목록 조회
     @GetMapping
-    public ResponseEntity<StoreResDto.StoreListResDto> getAllStoresForOwner(
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        StoreResDto.StoreListResDto stores = storeService.getAllStoresForOwner(userDetails.getUser().getId());
-        return ResponseEntity.ok(stores);
+    public ResponseEntity<PagedResDto<StoreResDto>> getAllStoresForOwner(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
+        Page<StoreResDto> stores = storeService.getAllStoresForOwner(userDetails.getUser().getId(), pageable);
+        return ResponseEntity.ok(new PagedResDto<>(stores));
     }
     //가게 수정 (이름 변경 불가)
     @PutMapping("/{storeId}")

@@ -25,7 +25,7 @@ public enum ErrorCode {
   DUPLICATE_STORE_NAME(2000, BAD_REQUEST.value(), "이미 존재하는 가게 이름입니다." ),
   STORE_ALREADY_DELETED(2000, NOT_FOUND.value(),"이미 삭제된 가게입니다." ),
   STORE_NOT_FOUND_OR_NO_PERMISSION(2000,BAD_REQUEST.value() , "본인이 소유한 가게가 아닙니다." ),
-
+  NO_STORE_REGISTERED(2000, NOT_FOUND.value(), "등록된 가게가 없습니다." ),
 
   /** 
    * Order : 4000
