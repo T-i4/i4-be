@@ -52,7 +52,12 @@ public class ProductService {
     Product product = productRepository.findByProductIdAndStore_storeId(productId, requestDto.getStoreId())
         .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 
-    updateProduct(requestDto, product);
+    boolean exist = productRepository.existsByProductName(requestDto.getProductDto().getProductName());
+    if(exist && !product.getProductName().equals(requestDto.getProductDto().getProductName())) {
+      throw new CustomException(ALREADY_EXIST_PRODUCT);
+    }
+
+    updateProductEntity(requestDto, product);
     return UpdateProductResDto.from(product);
   }
 
@@ -88,7 +93,7 @@ public class ProductService {
     return ProductsResDto.from(storeId, products);
   }
 
-  private void updateProduct(UpdateProductReqDto requestDto, Product product) {
+  private void updateProductEntity(UpdateProductReqDto requestDto, Product product) {
     product.setProductName(requestDto.getProductDto().getProductName());
     product.setQuantity(requestDto.getProductDto().getQuantity());
     product.setPrice(requestDto.getProductDto().getPrice());
