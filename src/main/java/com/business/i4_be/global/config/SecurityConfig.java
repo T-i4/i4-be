@@ -51,12 +51,46 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/cart/**")
                         .hasAnyAuthority("USER", "MASTER", "ADMIN")
 
+
+                        // --- 가게 ----
+                        .requestMatchers(HttpMethod.POST,"/api/owner/v1/stores")
+                        .hasAnyAuthority("ROLE_ADMIN","ROLE_MASTER")
+                        .requestMatchers(HttpMethod.DELETE,"/api/owner/v1/stores/{storeId}")
+                        .hasAnyAuthority("ROLE_MASTER")
+                        .requestMatchers(HttpMethod.PUT,"/api/owner/v1/stores/{storeId}")
+                        .hasAnyAuthority("ROLE_OWNER","ROLE_ADMIN","ROLE_MASTER")
+                        .requestMatchers(HttpMethod.PATCH,"/api/owner/v1/{storeId}/status","/api/owner/v1/{storeId}/category")
+                        .hasAnyAuthority("ROLE_OWNER","ROLE_ADMIN","ROLE_MASTER")
+                        .requestMatchers("/api/owner/v1/stores/**").authenticated()
+
+
+                        .requestMatchers("/api/v1/stores/**")
+                        .hasAnyAuthority("ROLE_USER", "ROLE_MASTER","ROLE_OWNER","ROLE_ADMIN")
+                        .requestMatchers("/api/v1/stores/**").authenticated()
+
+
                         // Product
                         .requestMatchers("/api/owner/v1/products").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN", "ROLE_OWNER")
                         .requestMatchers(HttpMethod.GET, "api/v1/products/**","/api/v1/products").permitAll()
                         .requestMatchers("/api/v1/products/**","/api/v1/products").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN", "ROLE_OWNER")
 
+
+                        //리뷰
+
+                        .requestMatchers("/api/v1/reviews/orders/{orderId}")
+                        .hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/api/v1/reviews/{reviewId}")
+                        .hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/api/v1/reviews/{reviewId}")
+                        .hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_MASTER")
+                        .requestMatchers("/api/v1/reviews/users/{userId}")
+                        .hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_MASTER")
+                        .requestMatchers("/api/v1/stores/{storeId}/reviews")
+                        .hasAnyAuthority("ROLE_USER", "ROLE_MASTER","ROLE_OWNER","ROLE_ADMIN")
+                        .requestMatchers("/api/v1/reviews/**").authenticated()
                         .anyRequest().authenticated()
+
+
                 )
 
                 // 🔹 Custom AccessDeniedHandler 추가

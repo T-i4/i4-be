@@ -14,6 +14,9 @@ public enum ErrorCode {
    * Bean Validation 같은 공통 예외는 0
    */
   USER_NOT_FOUND(1000, NOT_FOUND.value(), "유저가 존재하지 않습니다."),
+
+  FORBIDDEN(1000, BAD_REQUEST.value(),"접근 금지" ),
+
   ROLE_UPDATE_NOT_ALLOWED(1000, BAD_REQUEST.value(), "권한은 변경할 수 없습니다."),
   INVALID_REQUEST(1000, BAD_REQUEST.value(), "잘못된 요청입니다."),
 
@@ -25,6 +28,8 @@ public enum ErrorCode {
   INVALID_CATEGORY(2000, BAD_REQUEST.value(), "유효하지 않은 카테고리입니다." ),
   DUPLICATE_STORE_NAME(2000, BAD_REQUEST.value(), "이미 존재하는 가게 이름입니다." ),
   STORE_ALREADY_DELETED(2000, NOT_FOUND.value(),"이미 삭제된 가게입니다." ),
+  STORE_NOT_FOUND_OR_NO_PERMISSION(2000,BAD_REQUEST.value() , "본인이 소유한 가게가 아닙니다." ),
+  NO_STORE_REGISTERED(2000, NOT_FOUND.value(), "등록된 가게가 없습니다." ),
 
   /** 
    * Order : 4000
@@ -61,6 +66,7 @@ public enum ErrorCode {
    * Security 8000번
    */
   ACCESS_DENIED(8000, FORBIDDEN.value(), "권한이 없습니다.");
+
 
   private final int code; // 도메인 관리 코드
   private final int status;

@@ -3,6 +3,7 @@ package com.business.i4_be.domain.store.dto;
 import com.business.i4_be.domain.store.constant.StoreCategory;
 import com.business.i4_be.domain.store.constant.StoreIsOpen;
 import com.business.i4_be.domain.store.entity.Store;
+import com.business.i4_be.domain.user.entity.User;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,7 +31,10 @@ public class StoreReqDto {
     public interface Create {}
     public interface Update {}
 
+    @NotNull(message = "storeId는 필수입니다.", groups =Update.class)
     private UUID storeId;
+
+    private Long userId;
 
     @Valid
     private StoreDto storeDto;
@@ -80,7 +84,7 @@ public class StoreReqDto {
     /**
      * 엔티티로 변환 (가게 생성 시)
      */
-    public Store toEntity() {
+    public Store toEntity(User user) {
         return Store.builder()
                 .storeName(this.storeDto.storeName)
                 .storeNumber(this.storeDto.storeNumber)
@@ -90,6 +94,7 @@ public class StoreReqDto {
                 .closedTime(this.getClosedTimeAsLocalTime())
                 .category(this.storeDto.category)
                 .isOpen(this.storeDto.isOpen)
+                .user(user)
                 .build();
     }
 

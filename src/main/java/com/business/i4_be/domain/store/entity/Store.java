@@ -4,6 +4,7 @@ import com.business.i4_be.domain.order.entity.Order;
 import com.business.i4_be.domain.review.entity.Review;
 import com.business.i4_be.domain.store.constant.StoreCategory;
 import com.business.i4_be.domain.store.constant.StoreIsOpen;
+import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -64,6 +65,9 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public void updateStoreInfo(String storeNumber, String storeAddress, String storeDetail,
                                 LocalTime openTime, LocalTime closedTime,
@@ -85,5 +89,8 @@ public class Store extends BaseEntity {
 
     public void updateCategory(StoreCategory newCategory) {
         this.category = newCategory;
+    }
+    public void setUser(User user){
+        this.user = user;
     }
 }

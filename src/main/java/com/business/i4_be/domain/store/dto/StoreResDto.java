@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class StoreResDto {
 
     private UUID storeId;
+    private Long userId;
 
     @Valid
     private StoreDto storeDto;
@@ -63,6 +64,7 @@ public class StoreResDto {
     public static StoreResDto fromEntity(com.business.i4_be.domain.store.entity.Store store) {
         return StoreResDto.builder()
                 .storeId(store.getStoreId())
+                .userId(store.getUser() != null ? store.getUser().getId() : null)
                 .storeDto(StoreDto.builder()
                         .storeName(store.getStoreName())
                         .storeNumber(store.getStoreNumber())
