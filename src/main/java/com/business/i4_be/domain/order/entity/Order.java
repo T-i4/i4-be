@@ -4,7 +4,7 @@ import com.business.i4_be.domain.order.constant.OrderStatus;
 import com.business.i4_be.domain.order.constant.OrderType;
 import com.business.i4_be.domain.review.entity.Review;
 import com.business.i4_be.domain.store.entity.Store;
-import com.business.i4_be.domain.user.entity.Address;
+import com.business.i4_be.domain.address.entity.Address;
 import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.global.entity.BaseEntity;
 import jakarta.persistence.*;

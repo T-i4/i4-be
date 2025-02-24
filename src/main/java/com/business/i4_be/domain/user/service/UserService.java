@@ -1,23 +1,22 @@
 package com.business.i4_be.domain.user.service;
 
+import com.business.i4_be.domain.address.entity.Address;
+import com.business.i4_be.domain.address.repository.AddressRepository;
 import com.business.i4_be.domain.user.dto.request.UpdateUserRequest;
-import com.business.i4_be.domain.user.dto.request.UserUpdateWrapper;
 import com.business.i4_be.domain.user.dto.response.UserResponse;
 import com.business.i4_be.domain.user.dto.response.UserResponseWrapper;
 import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.domain.user.repository.UserRepository;
-import com.business.i4_be.domain.user.security.UserDetailsImpl;
 import com.business.i4_be.global.exception.CustomException;
 import com.business.i4_be.global.exception.ErrorCode;
 import com.business.i4_be.global.jwt.JwtUtil;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,15 +25,20 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final AddressRepository addressRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AddressRepository addressRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.addressRepository = addressRepository;
     }
 
     // 내 정보 조회
-    public UserResponseWrapper getMyInfo(User user) {
+    public UserResponseWrapper getMyInfo(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         return new UserResponseWrapper(new UserResponse(user));
     }
 
@@ -79,21 +83,29 @@ public class UserService {
             user.updatePassword(passwordEncoder.encode(request.getPassword()));
         }
 
-        // 주소 update
-        if (request.getAddress() != null) {
-            user.updateAddress(request.getAddress());
+        if (request.getAddresses() != null && !request.getAddresses().isEmpty()) {
+            List<Address> newAddresses = request.getAddresses().stream()
+                    .map(addressReq -> addressReq.toEntity(user)) // AddressRequest → Address 엔티티 변환
+                    .collect(Collectors.toList());
+
+            user.updateAddresses(newAddresses);
         }
+
 
         userRepository.save(user);
         return new UserResponseWrapper(new UserResponse(user));
     }
 
     // 주소 삭제
-    public UserResponseWrapper deleteUserAddress(Long userId) {
+    public UserResponseWrapper deleteUserAddress(Long userId, UUID addressId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        user.deleteAddress();
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ADDRESS_NOT_FOUND));
+
+        user.deleteAddress(address);
+        addressRepository.delete(address);
 
         userRepository.save(user);
         return new UserResponseWrapper(new UserResponse(user));

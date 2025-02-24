@@ -1,7 +1,11 @@
 package com.business.i4_be.domain.user.dto.response;
 
+import com.business.i4_be.domain.address.dto.response.AddressResDto;
 import com.business.i4_be.domain.user.entity.User;
 import lombok.Getter;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class UserResponse {
@@ -11,15 +15,18 @@ public class UserResponse {
     private final String email;
     private final String phoneNumber;
     private final String role;
-    private final String address;
+    private final List<AddressResDto> addresses;
 
     public UserResponse(User user) {
-        this.userId = user.getUserId();
+        this.userId = user.getId();
         this.username = user.getUsername();
         this.nickname = user.getNickname();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
         this.role = user.getRole().name();
-        this.address = user.getAddress();
+
+        this.addresses = user.getAddresses().stream()
+                .map(AddressResDto::new)
+                .collect(Collectors.toList());
     }
 }
