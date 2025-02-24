@@ -54,18 +54,18 @@ public class SecurityConfig {
 
                         // --- 가게 ----
                         .requestMatchers(HttpMethod.POST,"/api/owner/v1/stores")
-                        .hasAnyAuthority("ROLE_ADMIN","ROLE_MASTER")
+                        .hasAnyAuthority("ADMIN","MASTER")
                         .requestMatchers(HttpMethod.DELETE,"/api/owner/v1/stores/{storeId}")
-                        .hasAnyAuthority("ROLE_MASTER")
+                        .hasAnyAuthority("MASTER")
                         .requestMatchers(HttpMethod.PUT,"/api/owner/v1/stores/{storeId}")
-                        .hasAnyAuthority("ROLE_OWNER","ROLE_ADMIN","ROLE_MASTER")
+                        .hasAnyAuthority("OWNER","ADMIN","MASTER")
                         .requestMatchers(HttpMethod.PATCH,"/api/owner/v1/{storeId}/status","/api/owner/v1/{storeId}/category")
-                        .hasAnyAuthority("ROLE_OWNER","ROLE_ADMIN","ROLE_MASTER")
+                        .hasAnyAuthority("OWNER","ADMIN","MASTER")
                         .requestMatchers("/api/owner/v1/stores/**").authenticated()
 
 
                         .requestMatchers("/api/v1/stores/**")
-                        .hasAnyAuthority("ROLE_USER", "ROLE_MASTER","ROLE_OWNER","ROLE_ADMIN")
+                        .hasAnyAuthority("USER", "MASTER","OWNER","ADMIN")
                         .requestMatchers("/api/v1/stores/**").authenticated()
 
 
@@ -78,15 +78,15 @@ public class SecurityConfig {
                         //리뷰
 
                         .requestMatchers("/api/v1/reviews/orders/{orderId}")
-                        .hasAnyAuthority("ROLE_USER")
+                        .hasAnyAuthority("USER")
                         .requestMatchers("/api/v1/reviews/{reviewId}")
-                        .hasAnyAuthority("ROLE_USER")
+                        .hasAnyAuthority("USER")
                         .requestMatchers("/api/v1/reviews/{reviewId}")
-                        .hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_MASTER")
+                        .hasAnyAuthority("USER","ADMIN","MASTER")
                         .requestMatchers("/api/v1/reviews/users/{userId}")
-                        .hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_MASTER")
+                        .hasAnyAuthority("USER","ADMIN","MASTER")
                         .requestMatchers("/api/v1/stores/{storeId}/reviews")
-                        .hasAnyAuthority("ROLE_USER", "ROLE_MASTER","ROLE_OWNER","ROLE_ADMIN")
+                        .hasAnyAuthority("USER", "MASTER","OWNER","ADMIN")
                         .requestMatchers("/api/v1/reviews/**").authenticated()
                         .anyRequest().authenticated()
 

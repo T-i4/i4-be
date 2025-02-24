@@ -4,6 +4,7 @@ package com.business.i4_be.domain.review.service;
 import com.business.i4_be.domain.order.constant.OrderStatus;
 import com.business.i4_be.domain.order.entity.Order;
 import com.business.i4_be.domain.order.repository.OrderRepository;
+import com.business.i4_be.domain.review.dto.PagedResDto;
 import com.business.i4_be.domain.review.dto.ReviewReqDto;
 import com.business.i4_be.domain.review.dto.ReviewResDto;
 import com.business.i4_be.domain.review.entity.Review;
@@ -13,6 +14,8 @@ import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.global.exception.CustomException;
 import com.business.i4_be.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +31,7 @@ public class ReviewService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public ReviewResDto.ReviewDto createReview(UUID orderId, ReviewReqDto.ReviewDto reviewReqDto) {
+    public ReviewResDto.ReviewDto createReview(UUID orderId, ReviewReqDto.ReviewDto reviewReqDto,Long userId) {
 
         // 주문 가져오기
         Order order = orderRepository.findById(orderId)
@@ -60,7 +63,8 @@ public class ReviewService {
 
     //리뷰 수정
     @Transactional
-    public ReviewResDto.ReviewDto updateReview(UUID reviewId, ReviewReqDto.UpdateReviewDto reqDto) {
+    public ReviewResDto.ReviewDto updateReview(
+            UUID reviewId, ReviewReqDto.UpdateReviewDto reqDto,Long userId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
@@ -69,26 +73,28 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(UUID reviewId) {
+    public void deleteReview(UUID reviewId,Long userId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 삭제자는 예시로 "system"
-        review.delete("system");
+        review.delete(userId.toString());
         reviewRepository.save(review);
 
     }
 
     //사용자 ID로 리뷰 조회
     @Transactional(readOnly = true)
-    public ReviewResDto.ReviewListDto getUserReviews(Long userId) {
-        List<Review> reviews = reviewRepository.findByUserId(userId);
-        return ReviewResDto.ReviewListDto.fromEntity(null, reviews); // storeId 필요 없음
+    public PagedResDto<ReviewResDto.ReviewDto> getUserReviews(Long userId, Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findByUserIdWithPagination(userId, pageable);
+        return new PagedResDto<>(reviews.map(ReviewResDto.ReviewDto::fromEntity));
     }
 
 
-    public ReviewResDto.ReviewListDto getReviewsByStore(UUID storeId) {
-        List<Review> reviews = reviewRepository.findByStore_StoreId(storeId);
-        return ReviewResDto.ReviewListDto.fromEntity(storeId, reviews);
+
+    @Transactional(readOnly = true)
+    public PagedResDto<ReviewResDto.ReviewDto> getReviewsByStore(UUID storeId, Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findByStoreIdWithPagination(storeId, pageable);
+        return new PagedResDto<>(reviews.map(ReviewResDto.ReviewDto::fromEntity));
     }
 }

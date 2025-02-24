@@ -8,10 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, UUID> {
-
-    List<Review> findByUserId(Long userId);
+public interface ReviewRepository extends JpaRepository<Review, UUID>,ReviewRepositoryCustom {
 
 
-    List<Review> findByStore_StoreId(UUID storeId);
 }
