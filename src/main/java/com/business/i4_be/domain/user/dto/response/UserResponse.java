@@ -4,6 +4,7 @@ import com.business.i4_be.domain.address.dto.response.AddressResDto;
 import com.business.i4_be.domain.user.entity.User;
 import lombok.Getter;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,8 +26,8 @@ public class UserResponse {
         this.phoneNumber = user.getPhoneNumber();
         this.role = user.getRole().name();
 
-        this.addresses = user.getAddresses().stream()
-                .map(AddressResDto::new)
-                .collect(Collectors.toList());
+        this.addresses = user.getAddresses() != null
+                ? user.getAddresses().stream().map(AddressResDto::new).collect(Collectors.toList())
+                : Collections.emptyList();
     }
 }
