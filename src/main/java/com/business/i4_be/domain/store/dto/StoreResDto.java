@@ -2,6 +2,7 @@ package com.business.i4_be.domain.store.dto;
 
 import com.business.i4_be.domain.store.constant.StoreCategory;
 import com.business.i4_be.domain.store.constant.StoreIsOpen;
+import com.business.i4_be.domain.store.entity.Store;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ public class StoreResDto {
     private UUID storeId;
     private Long userId;
 
+    private Double averageRating;
     @Valid
     private StoreDto storeDto;
 
@@ -65,6 +67,23 @@ public class StoreResDto {
         return StoreResDto.builder()
                 .storeId(store.getStoreId())
                 .userId(store.getUser() != null ? store.getUser().getId() : null)
+                .storeDto(StoreDto.builder()
+                        .storeName(store.getStoreName())
+                        .storeNumber(store.getStoreNumber())
+                        .storeAddress(store.getStoreAddress())
+                        .storeDetail(store.getStoreDetail())
+                        .openTime(store.getOpenTime().toString())
+                        .closedTime(store.getClosedTime().toString())
+                        .category(store.getCategory())
+                        .isOpen(store.getIsOpen())
+                        .build())
+                .build();
+    }
+    public static StoreResDto fromEntityWithRating(Store store, double averageRating) {
+        return StoreResDto.builder()
+                .storeId(store.getStoreId())
+                .userId(store.getUser() != null ? store.getUser().getId() : null)
+                .averageRating(averageRating)
                 .storeDto(StoreDto.builder()
                         .storeName(store.getStoreName())
                         .storeNumber(store.getStoreNumber())
