@@ -61,6 +61,8 @@ public class SecurityConfig {
                         .hasAnyAuthority("OWNER","ADMIN","MASTER")
                         .requestMatchers(HttpMethod.PATCH,"/api/owner/v1/{storeId}/status","/api/owner/v1/{storeId}/category")
                         .hasAnyAuthority("OWNER","ADMIN","MASTER")
+                        .requestMatchers("/api/owner/v1/stores/{storeId}/change-owner")
+                        .hasAnyAuthority("ADMIN","MASTER")
                         .requestMatchers("/api/owner/v1/stores/**").authenticated()
 
 
@@ -91,6 +93,11 @@ public class SecurityConfig {
 
                         // Swagger
                         .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
+                                       
+                        //AI 상품 내용 추천
+                        .requestMatchers("/api/products/ai-description","/api/product/ai-description/my")
+                        .hasAnyAuthority("OWNER","ADMIN","MASTER")
+
                         .anyRequest().authenticated()
 
                 )

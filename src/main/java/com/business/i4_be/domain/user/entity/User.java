@@ -1,7 +1,11 @@
 package com.business.i4_be.domain.user.entity;
 
 import com.business.i4_be.domain.address.entity.Address;
+import com.business.i4_be.domain.ai.AiDescription;
+import com.business.i4_be.domain.review.entity.Review;
+import com.business.i4_be.domain.store.entity.Store;
 import com.business.i4_be.global.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,6 +48,14 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Address> addresses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<AiDescription> aiDescriptions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Store> stores = new ArrayList<>();
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Review> reviews = new ArrayList<>();
 
     public void deleteAddress(Address address) {
         this.addresses.remove(address);
