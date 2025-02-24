@@ -25,6 +25,10 @@ public class GlobalExceptionHandler {
         .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
         .forEach(message -> sb.append(message).append("\n"));
 
+    if (sb.length() > 0 && sb.charAt(sb.length() - 1) == '\n') {
+      sb.deleteCharAt(sb.length() - 1);  // 마지막 문자가 개행 문자라면 삭제
+    }
+
     String errorMessages = sb.toString();
     ErrorResponse errorResponse = new ErrorResponse(0,BAD_REQUEST.value(), errorMessages);
     return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);

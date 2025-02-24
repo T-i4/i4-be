@@ -53,26 +53,26 @@ public class SecurityConfig {
 
 
                         // --- 가게 ----
-                        .requestMatchers(HttpMethod.POST, "/api/owner/v1/stores")
-                        .hasAnyAuthority("ADMIN", "MASTER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/owner/v1/stores/{storeId}")
+                        .requestMatchers(HttpMethod.POST,"/api/owner/v1/stores")
+                        .hasAnyAuthority("ADMIN","MASTER")
+                        .requestMatchers(HttpMethod.DELETE,"/api/owner/v1/stores/{storeId}")
                         .hasAnyAuthority("MASTER")
-                        .requestMatchers(HttpMethod.PUT, "/api/owner/v1/stores/{storeId}")
-                        .hasAnyAuthority("OWNER", "ADMIN", "MASTER")
-                        .requestMatchers(HttpMethod.PATCH, "/api/owner/v1/{storeId}/status", "/api/owner/v1/{storeId}/category")
-                        .hasAnyAuthority("OWNER", "ADMIN", "MASTER")
+                        .requestMatchers(HttpMethod.PUT,"/api/owner/v1/stores/{storeId}")
+                        .hasAnyAuthority("OWNER","ADMIN","MASTER")
+                        .requestMatchers(HttpMethod.PATCH,"/api/owner/v1/{storeId}/status","/api/owner/v1/{storeId}/category")
+                        .hasAnyAuthority("OWNER","ADMIN","MASTER")
                         .requestMatchers("/api/owner/v1/stores/**").authenticated()
 
 
                         .requestMatchers("/api/v1/stores/**")
-                        .hasAnyAuthority("USER", "MASTER", "OWNER", "ADMIN")
+                        .hasAnyAuthority("USER", "MASTER","OWNER","ADMIN")
                         .requestMatchers("/api/v1/stores/**").authenticated()
 
 
                         // Product
-                        .requestMatchers("/api/owner/v1/products").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN", "ROLE_OWNER")
-                        .requestMatchers(HttpMethod.GET, "api/v1/products/**", "/api/v1/products").permitAll()
-                        .requestMatchers("/api/v1/products/**", "/api/v1/products").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN", "ROLE_OWNER")
+                        .requestMatchers("/api/owner/v1/products").hasAnyAuthority("MASTER", "ADMIN", "OWNER")
+                        .requestMatchers(HttpMethod.GET, "api/v1/products/**","/api/v1/products").permitAll()
+                        .requestMatchers("/api/v1/products/**","/api/v1/products").hasAnyAuthority("MASTER", "ADMIN", "OWNER")
 
 
                         //리뷰
@@ -82,11 +82,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/reviews/{reviewId}")
                         .hasAnyAuthority("USER")
                         .requestMatchers("/api/v1/reviews/{reviewId}")
-                        .hasAnyAuthority("USER", "ADMIN", "MASTER")
+                        .hasAnyAuthority("USER","ADMIN","MASTER")
                         .requestMatchers("/api/v1/reviews/users/{userId}")
-                        .hasAnyAuthority("USER", "ADMIN", "MASTER")
+                        .hasAnyAuthority("USER","ADMIN","MASTER")
                         .requestMatchers("/api/v1/stores/{storeId}/reviews")
-                        .hasAnyAuthority("USER", "MASTER", "OWNER", "ADMIN")
+                        .hasAnyAuthority("USER", "MASTER","OWNER","ADMIN")
                         .requestMatchers("/api/v1/reviews/**").authenticated()
 
                         //AI 상품 내용 추천

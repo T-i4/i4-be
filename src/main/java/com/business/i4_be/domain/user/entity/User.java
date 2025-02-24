@@ -1,5 +1,6 @@
 package com.business.i4_be.domain.user.entity;
 
+import com.business.i4_be.domain.address.entity.Address;
 import com.business.i4_be.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,8 +42,17 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private UserRole role;
 
-    @Column(nullable = true)
-    private String address;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Address> addresses = new ArrayList<>();
+
+    public void deleteAddress(Address address) {
+        this.addresses.remove(address);
+    }
+
+    public void updateAddresses(List<Address> newAddresses) {
+        this.addresses.clear();
+        this.addresses.addAll(newAddresses);
+    }
 
     public Long getId() {
         return userId;
@@ -65,24 +75,6 @@ public class User extends BaseEntity {
     }
 
     public void updatePhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void updateAddress(String address) {
-        this.address = address;
-    }
-
-    public void deleteAddress() {
-        this.address = null;
-    }
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Address> addresses = new ArrayList<>();
-
-    public void updateUserInfo(String username, String email, String nickname, String phoneNumber) {
-        this.username = username;
-        this.email = email;
-        this.nickname = nickname;
         this.phoneNumber = phoneNumber;
     }
 }

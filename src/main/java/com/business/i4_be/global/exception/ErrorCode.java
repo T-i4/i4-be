@@ -2,6 +2,7 @@ package com.business.i4_be.global.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -14,11 +15,12 @@ public enum ErrorCode {
    * Bean Validation 같은 공통 예외는 0
    */
   USER_NOT_FOUND(1000, NOT_FOUND.value(), "유저가 존재하지 않습니다."),
-
   FORBIDDEN(1000, BAD_REQUEST.value(),"접근 금지" ),
-
   ROLE_UPDATE_NOT_ALLOWED(1000, BAD_REQUEST.value(), "권한은 변경할 수 없습니다."),
   INVALID_REQUEST(1000, BAD_REQUEST.value(), "잘못된 요청입니다."),
+  INVALID_ROLE(1000, BAD_REQUEST.value(), "회원가입은 USER 와 OWNER 만 가능합니다."),
+  DUPLICATE_USER_NAME(1000, BAD_REQUEST.value(), "이미 존재하는 이름입니다." ),
+  INVALID_CREDENTIALS(1000, HttpStatus.BAD_REQUEST.value(), "아이디 또는 비밀번호가 올바르지 않습니다."),
 
   /** Store : 2000
    * */
@@ -65,7 +67,7 @@ public enum ErrorCode {
   /**
    * Security 8000번
    */
-  ACCESS_DENIED(8000, FORBIDDEN.value(), "권한이 없습니다.");
+  ACCESS_DENIED(8000, HttpStatus.FORBIDDEN.value(), "권한이 없습니다.");
 
 
   private final int code; // 도메인 관리 코드

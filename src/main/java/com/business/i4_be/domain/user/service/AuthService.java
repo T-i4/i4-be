@@ -9,6 +9,8 @@ import com.business.i4_be.domain.user.dto.response.SignupResponse;
 import com.business.i4_be.domain.user.dto.response.UserResponse;
 import com.business.i4_be.domain.user.entity.UserRole;
 import com.business.i4_be.domain.user.security.UserDetailsImpl;
+import com.business.i4_be.global.exception.CustomException;
+import com.business.i4_be.global.exception.ErrorCode;
 import com.business.i4_be.global.jwt.TokenDto;
 import com.business.i4_be.global.jwt.TokenProvider;
 import com.business.i4_be.domain.user.entity.User;
@@ -43,11 +45,11 @@ public class AuthService {
         try {
             role = UserRole.valueOf(request.getRole().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("유효하지 않은 역할입니다. USER 또는 OWNER만 가능합니다.");
+            throw new CustomException(ErrorCode.INVALID_ROLE);
         }
 
         if (role == UserRole.ADMIN || role == UserRole.MASTER) {
-            throw new IllegalArgumentException("관리자 계정은 회원가입할 수 없습니다.");
+            throw new CustomException(ErrorCode.INVALID_ROLE);
         }
 
         // 비밀번호 암호화
@@ -73,7 +75,7 @@ public class AuthService {
     // 중복 검증
     private void validateDuplicateUser(String username) {
         if (userRepository.findByUsername(username).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 이름입니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_USER_NAME);
         }
     }
 
@@ -82,10 +84,11 @@ public class AuthService {
         SigninRequest request = userSigninRequest.getUser();
 
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new BadCredentialsException("아이디 또는 비밀번호가 올바르지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CREDENTIALS));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("아이디 또는 비밀번호가 올바르지 않습니다.");
+            throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
+
         }
 
         TokenDto tokenDto = tokenProvider.generateTokens(user.getUsername(), user.getRole().name());
@@ -96,7 +99,7 @@ public class AuthService {
     // 탈퇴
     public void deleteMyAccount(UserDetailsImpl userDetails) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         userRepository.delete(user);
     }
@@ -104,7 +107,7 @@ public class AuthService {
     // 특정 유저 삭제
     public void deleteUser(Long userId, UserDetailsImpl userDetails) {
         User targetUser = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         UserRole requesterRole = userDetails.getUser().getRole();
         UserRole targetRole = targetUser.getRole();
