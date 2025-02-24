@@ -1,6 +1,7 @@
 package com.business.i4_be.domain.product.dto;
 
 import com.business.i4_be.domain.product.constants.ProductStatus;
+import com.business.i4_be.global.annotation.ValidEnum;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -42,7 +43,7 @@ public class UpdateProductReqDto {
 
     private String text;
 
-    @NotNull
+    @ValidEnum(enumClass = ProductStatus.class)
     private ProductStatus status;
 
     private String imageUrl;

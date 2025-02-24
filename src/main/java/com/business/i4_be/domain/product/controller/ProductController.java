@@ -4,8 +4,8 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 import com.business.i4_be.domain.product.dto.AddProductReqDto;
 import com.business.i4_be.domain.product.dto.AddProductResDto;
+import com.business.i4_be.domain.product.dto.PageProductsResDto;
 import com.business.i4_be.domain.product.dto.ProductResDto;
-import com.business.i4_be.domain.product.dto.ProductsResDto;
 import com.business.i4_be.domain.product.dto.UpdateProductReqDto;
 import com.business.i4_be.domain.product.dto.UpdateProductResDto;
 import com.business.i4_be.domain.product.service.ProductService;
@@ -14,6 +14,8 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -71,10 +73,10 @@ public class ProductController {
   }
 
   @GetMapping
-  public ResponseEntity<ProductsResDto> searchProducts(
+  public ResponseEntity<PageProductsResDto> searchProducts(
       @RequestParam("storeId") UUID storeId,
-      @RequestParam("keyword") String keyword
-  ) {
-    return ResponseEntity.ok().body(productService.searchProducts(storeId, keyword));
+      @RequestParam("keyword") String keyword,
+      @PageableDefault(page = 1, sort = "createdAt") Pageable pageable) {
+    return ResponseEntity.ok().body(productService.searchProducts(storeId, keyword, pageable));
   }
 }

@@ -6,6 +6,7 @@ import static com.business.i4_be.global.exception.ErrorCode.STORE_NOT_FOUND;
 
 import com.business.i4_be.domain.product.dto.AddProductReqDto;
 import com.business.i4_be.domain.product.dto.AddProductResDto;
+import com.business.i4_be.domain.product.dto.PageProductsResDto;
 import com.business.i4_be.domain.product.dto.ProductResDto;
 import com.business.i4_be.domain.product.dto.ProductsResDto;
 import com.business.i4_be.domain.product.dto.UpdateProductReqDto;
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,9 +82,10 @@ public class ProductService {
   }
 
   @Transactional(readOnly = true)
-  public ProductsResDto searchProducts(UUID storeId, String keyword) {
-    List<Product> products = productRepository.findByStore_storeIdAndProductNameContaining(storeId, keyword);
-    return ProductsResDto.from(storeId, products);
+  public PageProductsResDto searchProducts(UUID storeId, String keyword, Pageable pageable) {
+    Page<Product> products = productRepository.findByStore_storeIdAndProductNameContaining(storeId,
+        keyword, pageable);
+    return PageProductsResDto.from(storeId, products);
   }
 
   @Transactional(readOnly = true)
