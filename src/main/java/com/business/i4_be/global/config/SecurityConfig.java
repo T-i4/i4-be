@@ -91,6 +91,9 @@ public class SecurityConfig {
                         .hasAnyAuthority("USER", "MASTER","OWNER","ADMIN")
                         .requestMatchers("/api/v1/reviews/**").authenticated()
 
+                        // Swagger
+                        .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
+                                       
                         //AI 상품 내용 추천
                         .requestMatchers("/api/products/ai-description","/api/product/ai-description/my")
                         .hasAnyAuthority("OWNER","ADMIN","MASTER")
@@ -98,7 +101,6 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
 
                 )
-
                 // 🔹 Custom AccessDeniedHandler 추가
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(customAccessDeniedHandler)

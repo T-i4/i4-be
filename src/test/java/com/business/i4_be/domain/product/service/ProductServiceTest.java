@@ -18,6 +18,9 @@ import com.business.i4_be.domain.store.constant.StoreCategory;
 import com.business.i4_be.domain.store.constant.StoreIsOpen;
 import com.business.i4_be.domain.store.entity.Store;
 import com.business.i4_be.domain.store.repository.StoreRepository;
+import com.business.i4_be.domain.user.entity.User;
+import com.business.i4_be.domain.user.entity.UserRole;
+import com.business.i4_be.domain.user.repository.UserRepository;
 import com.business.i4_be.global.exception.CustomException;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -27,6 +30,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 class ProductServiceTest extends DeleteSupport {
 
@@ -39,11 +43,20 @@ class ProductServiceTest extends DeleteSupport {
   @Autowired
   StoreRepository storeRepository;
 
+  @Autowired
+  UserRepository userRepository;
+
+  @Autowired
+  PasswordEncoder passwordEncoder;
+
+  User user;
   Store store;
 
   @BeforeEach
   void setUp() {
-    Store addStore = makeStore();
+    User addUser = makeUser();
+    user = userRepository.save(addUser);
+    Store addStore = makeStore(user);
     store = storeRepository.save(addStore);
   }
 
@@ -51,12 +64,10 @@ class ProductServiceTest extends DeleteSupport {
   @DisplayName("상품 등록 성공")
   void product_save() {
     // given
-    Long userId = 1L;
-
     AddProductReqDto reqDto = makeAddProductReqDto(store.getStoreId(), "치즈 떡볶이", 2, 5500);
 
     // when
-    productService.addProduct(userId, reqDto);
+    productService.addProduct(user.getId(), reqDto);
 
     //then
     Optional<Product> addProduct = productRepository.findByProductName(
@@ -75,8 +86,7 @@ class ProductServiceTest extends DeleteSupport {
   @Test
   @DisplayName("상품 등록 실패 - 중복된 상품명")
   void product_save_fail() {
-    // given
-    Long userId = 1L;
+    // given;
     AddProductReqDto reqDto = makeAddProductReqDto(store.getStoreId(), "치즈 떡볶이", 2, 5500);
     Product product = makeAddProduct(reqDto);
 
@@ -84,14 +94,13 @@ class ProductServiceTest extends DeleteSupport {
 
     // when, then
     assertThrows(CustomException.class,
-        () -> productService.addProduct(userId, reqDto));
+        () -> productService.addProduct(user.getId(), reqDto));
   }
 
   @Test
   @DisplayName("상품 수정 성공")
   void product_update() {
     //given
-    Long userId = 1L;
     UpdateProductReqDto reqDto = makeUpdateProductReqDto("치즈 떡볶이", 4, 5500);
     Product product = makeUpdateProduct(reqDto);
 
@@ -100,7 +109,7 @@ class ProductServiceTest extends DeleteSupport {
     UpdateProductReqDto changeDto = makeUpdateProductReqDto("마라 떡볶이", 6, 3300);
 
     //when
-    UpdateProductResDto resDto = productService.updateProduct(userId, addProduct.getProductId(),
+    UpdateProductResDto resDto = productService.updateProduct(user.getId(), addProduct.getProductId(),
         changeDto);
 
     //then
@@ -119,7 +128,6 @@ class ProductServiceTest extends DeleteSupport {
   @DisplayName("상품 수정 실패 - 변경하는 상품명이 이미 존재")
   void product_update_fail() {
     //given
-    Long userId = 1L;
     UpdateProductReqDto reqDto1 = makeUpdateProductReqDto("치즈 떡볶이", 4, 5500);
     Product product1 = makeUpdateProduct(reqDto1);
     Product addProduct1 = productRepository.save(product1);
@@ -132,7 +140,7 @@ class ProductServiceTest extends DeleteSupport {
 
     //when
     CustomException e = assertThrows(CustomException.class,
-        () -> productService.updateProduct(userId, addProduct1.getProductId(),
+        () -> productService.updateProduct(user.getId(), addProduct1.getProductId(),
             changeDto));
     assertEquals(ALREADY_EXIST_PRODUCT.getMessage(), e.getErrorCode().getMessage());
   }
@@ -158,7 +166,6 @@ class ProductServiceTest extends DeleteSupport {
   @DisplayName("상품 삭제 테스트")
   class DeleteProduct {
 
-    Long userId = 1L;
     Product product;
 
     @Test
@@ -170,7 +177,7 @@ class ProductServiceTest extends DeleteSupport {
 
       //when, then
       CustomException e = assertThrows(CustomException.class,
-          () -> productService.deleteProduct(userId, store.getStoreId(), UUID.randomUUID()));
+          () -> productService.deleteProduct(user.getId(), store.getStoreId(), UUID.randomUUID()));
       assertEquals(PRODUCT_NOT_FOUND.getMessage(), e.getErrorCode().getMessage());
     }
 
@@ -182,7 +189,7 @@ class ProductServiceTest extends DeleteSupport {
       Product saveProduct = productRepository.save(product);
 
       //when
-      productService.deleteProduct(userId, store.getStoreId(), saveProduct.getProductId());
+      productService.deleteProduct(user.getId(), store.getStoreId(), saveProduct.getProductId());
 
       //then
       Optional<Product> checkProduct = productRepository.findByProductIdAndStore_storeId(
@@ -232,7 +239,7 @@ class ProductServiceTest extends DeleteSupport {
         .build();
   }
 
-  private Store makeStore() {
+  private Store makeStore(User user) {
     return Store.builder()
         .storeName("신전 떡볶이")
         .storeAddress("Test 주소")
@@ -242,6 +249,18 @@ class ProductServiceTest extends DeleteSupport {
         .openTime(LocalTime.now())
         .closedTime(LocalTime.now())
         .isOpen(StoreIsOpen.OPEN)
+        .user(user)
+        .build();
+  }
+
+  private User makeUser() {
+    return User.builder()
+        .username("testuser1")
+        .nickname("test1")
+        .password(passwordEncoder.encode("Password123!"))
+        .email("test70@naver.com")
+        .phoneNumber("01029560340")
+        .role(UserRole.MASTER)
         .build();
   }
 

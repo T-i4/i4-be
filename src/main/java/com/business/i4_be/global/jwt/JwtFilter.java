@@ -30,8 +30,10 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();  // 요청 URI 가져오기
 
-        // 회원가입, 로그인 요청은 JWT 검증을 하지 않도록 예외 처리
-        if (requestURI.equals("/api/v1/signup") || requestURI.equals("/api/v1/signin")) {
+        // 회원가입, 로그인 요청, Swagger 는 JWT 검증을 하지 않도록 예외 처리
+        if (requestURI.equals("/api/v1/signup") || requestURI.equals("/api/v1/signin") ||
+        requestURI.startsWith("/swagger-ui/") || requestURI.startsWith("/v3/api-docs/") ||
+        requestURI.startsWith("/swagger-resources/")) {
             filterChain.doFilter(request, response);
             return;
         }

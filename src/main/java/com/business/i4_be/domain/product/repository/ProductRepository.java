@@ -24,4 +24,6 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
   boolean existsByProductName(String productName);
 
   Optional<Product> findByProductName( String productName);
+
+  List<Product> findAllByProductIdIn(List<UUID> productIds);
 }
