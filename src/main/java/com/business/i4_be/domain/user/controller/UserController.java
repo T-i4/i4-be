@@ -11,10 +11,12 @@ import com.business.i4_be.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -25,8 +27,8 @@ public class UserController {
 
     // 내 정보 조회
     @GetMapping("/me")
-    public ResponseEntity<UserResponseWrapper> getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok(userService.getMyInfo(userDetails.getUser()));
+    public ResponseEntity<UserResponseWrapper> getMyInfo(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(userService.getMyInfo(userDetails.getUsername()));
     }
 
     // 특정 유저 조회
@@ -46,12 +48,6 @@ public class UserController {
         }
 
         return ResponseEntity.ok(userService.updateUser(userDetails.getUser().getId(), requestWrapper.getUser()));
-    }
-
-    // 주소 삭제
-    @DeleteMapping("/delete/me/address")
-    public ResponseEntity<UserResponseWrapper> deleteAddress(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok(userService.deleteUserAddress(userDetails.getUser().getId()));
     }
 
     // 회원 탈퇴
