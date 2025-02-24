@@ -6,6 +6,7 @@ import com.business.i4_be.domain.user.dto.request.UpdateUserRequest;
 import com.business.i4_be.domain.user.dto.response.UserResponse;
 import com.business.i4_be.domain.user.dto.response.UserResponseWrapper;
 import com.business.i4_be.domain.user.entity.User;
+import com.business.i4_be.domain.user.entity.UserRole;
 import com.business.i4_be.domain.user.repository.UserRepository;
 import com.business.i4_be.global.exception.CustomException;
 import com.business.i4_be.global.exception.ErrorCode;
@@ -91,7 +92,6 @@ public class UserService {
             user.updateAddresses(newAddresses);
         }
 
-
         userRepository.save(user);
         return new UserResponseWrapper(new UserResponse(user));
     }
@@ -121,5 +121,31 @@ public class UserService {
         Map<String, String> response = new HashMap<>();
         response.put("message", "탈퇴되었습니다.");
         return response;
+    }
+
+    // 회원 삭제
+    public void deleteUser(Long userId, Long loggedInUserId) {
+        User loggedInUser = userRepository.findById(loggedInUserId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        User targetUser = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // MASTER는 누구든 삭제 가능
+        if (loggedInUser.getRole() == UserRole.MASTER) {
+            userRepository.delete(targetUser);
+            return;
+        }
+
+        // ADMIN은 MASTER 제외 삭제 가능
+        if (loggedInUser.getRole() == UserRole.ADMIN) {
+            if (targetUser.getRole() != UserRole.MASTER) {
+                userRepository.delete(targetUser);
+                return;
+            } else {
+                throw new CustomException(ErrorCode.UNAUTHORIZED_ACTION);
+            }
+        }
+        throw new CustomException(ErrorCode.UNAUTHORIZED_ACTION);
     }
 }

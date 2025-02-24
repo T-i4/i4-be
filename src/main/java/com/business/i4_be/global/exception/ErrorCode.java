@@ -21,6 +21,7 @@ public enum ErrorCode {
   INVALID_ROLE(1000, BAD_REQUEST.value(), "회원가입은 USER 와 OWNER 만 가능합니다."),
   DUPLICATE_USER_NAME(1000, BAD_REQUEST.value(), "이미 존재하는 이름입니다." ),
   INVALID_CREDENTIALS(1000, HttpStatus.BAD_REQUEST.value(), "아이디 또는 비밀번호가 올바르지 않습니다."),
+  UNAUTHORIZED_ACTION(1000, HttpStatus.BAD_REQUEST.value(), "권한이 없습니다."),
 
   /** Store : 2000
    * */

@@ -10,11 +10,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressReqDto {
-    private String address;
+    private AddressUser user;  // 클라이언트에서 넘어온 user 객체
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddressUser {
+        private String address;
+    }
 
     public Address toEntity(User user) {
         return Address.builder()
-                .address(this.address)
+                .address(this.user.getAddress())  // 내부 user 객체에서 address 값 추출
                 .user(user)
                 .build();
     }
