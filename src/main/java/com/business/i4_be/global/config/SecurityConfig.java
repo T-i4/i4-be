@@ -88,11 +88,12 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/stores/{storeId}/reviews")
                         .hasAnyAuthority("USER", "MASTER","OWNER","ADMIN")
                         .requestMatchers("/api/v1/reviews/**").authenticated()
+
+                        // Swagger
+                        .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
 
-
                 )
-
                 // 🔹 Custom AccessDeniedHandler 추가
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(customAccessDeniedHandler)

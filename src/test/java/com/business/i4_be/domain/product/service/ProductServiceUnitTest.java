@@ -19,6 +19,8 @@ import com.business.i4_be.domain.store.constant.StoreCategory;
 import com.business.i4_be.domain.store.constant.StoreIsOpen;
 import com.business.i4_be.domain.store.entity.Store;
 import com.business.i4_be.domain.store.repository.StoreRepository;
+import com.business.i4_be.domain.user.entity.User;
+import com.business.i4_be.domain.user.entity.UserRole;
 import com.business.i4_be.global.exception.CustomException;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -49,12 +51,13 @@ class ProductServiceUnitTest {
   void product_save() {
     // given
     Long userId = 1L;
+    User user = makeUser(userId);
 
     AddProductReqDto reqDto = makeAddProductReqDto("치즈 떡볶이", 2, 5500);
     Product product = makeAddProduct(reqDto);
-    Store store = makeStore(reqDto.getStoreId());
+    Store store = makeStore(reqDto.getStoreId(), user);
 
-    given(storeRepository.findById(reqDto.getStoreId())).willReturn(Optional.ofNullable(store));
+    given(storeRepository.findByStoreIdAndUserId(reqDto.getStoreId(), userId)).willReturn(Optional.ofNullable(store));
 
     given(productRepository.existsByProductName(reqDto.getProductDto().getProductName()))
         .willReturn(Boolean.FALSE);
@@ -81,11 +84,12 @@ class ProductServiceUnitTest {
   void product_save_fail() {
     // given
     Long userId = 1L;
+    User user = makeUser(userId);
 
     AddProductReqDto reqDto = makeAddProductReqDto("치즈 떡볶이", 2, 5500);
 
-    Store store = makeStore(reqDto.getStoreId());
-    given(storeRepository.findById(reqDto.getStoreId())).willReturn(Optional.ofNullable(store));
+    Store store = makeStore(reqDto.getStoreId(), user);
+    given(storeRepository.findByStoreIdAndUserId(reqDto.getStoreId(), userId)).willReturn(Optional.ofNullable(store));
 
     given(productRepository.existsByProductName(reqDto.getProductDto().getProductName()))
         .willReturn(Boolean.TRUE);
@@ -101,8 +105,13 @@ class ProductServiceUnitTest {
   void product_update() {
     //given
     Long userId = 1L;
+    User user = makeUser(userId);
+
     UpdateProductReqDto reqDto = makeUpdateProductReqDto("치즈 떡볶이", 4, 5500);
+    Store store = makeStore(reqDto.getStoreId(), user);
     Product product = makeUpdateProduct(reqDto);
+
+    given(storeRepository.findByStoreIdAndUserId(reqDto.getStoreId(), userId)).willReturn(Optional.of(store));
     given(productRepository.findByProductIdAndStore_storeId(product.getProductId(),
         reqDto.getStoreId()))
         .willReturn(Optional.of(product));
@@ -132,8 +141,13 @@ class ProductServiceUnitTest {
   @DisplayName("상품 수정 실패 - 변경하는 상품명이 이미 존재")
   void product_update_fail() {
     Long userId = 1L;
+    User user = makeUser(userId);
+
     UpdateProductReqDto reqDto = makeUpdateProductReqDto("치즈 떡볶이", 4, 5500);
+    Store store = makeStore(reqDto.getStoreId(), user);
     Product product = makeUpdateProduct(reqDto);
+
+    given(storeRepository.findByStoreIdAndUserId(reqDto.getStoreId(), userId)).willReturn(Optional.of(store));
     given(productRepository.findByProductIdAndStore_storeId(product.getProductId(),
         reqDto.getStoreId()))
         .willReturn(Optional.of(product));
@@ -149,7 +163,7 @@ class ProductServiceUnitTest {
     assertEquals(ALREADY_EXIST_PRODUCT.getMessage(), e.getMessage());
   }
 
-  private Store makeStore(UUID storeId) {
+  private Store makeStore(UUID storeId, User user) {
     return Store.builder()
         .storeId(storeId)
         .storeName("신전 떡볶이")
@@ -160,6 +174,18 @@ class ProductServiceUnitTest {
         .openTime(LocalTime.now())
         .closedTime(LocalTime.now())
         .isOpen(StoreIsOpen.OPEN)
+        .user(user)
+        .build();
+  }
+
+  private User makeUser(Long userId) {
+    return User.builder()
+        .userId(userId)
+        .username("testuser1")
+        .nickname("test1")
+        .email("test70@naver.com")
+        .phoneNumber("01029560340")
+        .role(UserRole.MASTER)
         .build();
   }
 

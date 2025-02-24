@@ -4,6 +4,7 @@ import static com.business.i4_be.global.exception.ErrorCode.ALREADY_EXIST_PRODUC
 import static com.business.i4_be.global.exception.ErrorCode.PRODUCT_NOT_FOUND;
 import static com.business.i4_be.global.exception.ErrorCode.STORE_NOT_FOUND;
 
+import com.business.i4_be.domain.product.constants.ProductStatus;
 import com.business.i4_be.domain.product.dto.AddProductReqDto;
 import com.business.i4_be.domain.product.dto.AddProductResDto;
 import com.business.i4_be.domain.product.dto.PageProductsResDto;
@@ -11,6 +12,9 @@ import com.business.i4_be.domain.product.dto.ProductResDto;
 import com.business.i4_be.domain.product.dto.ProductsResDto;
 import com.business.i4_be.domain.product.dto.UpdateProductReqDto;
 import com.business.i4_be.domain.product.dto.UpdateProductResDto;
+import com.business.i4_be.domain.product.dto.UpdateStatusProductReqDto;
+import com.business.i4_be.domain.product.dto.UpdateStatusProductReqDto.ProductDto;
+import com.business.i4_be.domain.product.dto.UpdateStatusProductResDto;
 import com.business.i4_be.domain.product.entity.Product;
 import com.business.i4_be.domain.product.repository.ProductRepository;
 import com.business.i4_be.domain.store.entity.Store;
@@ -18,7 +22,9 @@ import com.business.i4_be.domain.store.repository.StoreRepository;
 import com.business.i4_be.global.exception.CustomException;
 import com.business.i4_be.global.exception.ErrorCode;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -37,7 +43,7 @@ public class ProductService {
   @Transactional
   public AddProductResDto addProduct(Long userId, AddProductReqDto requestDto)
       throws CustomException {
-    Store store = storeRepository.findById(requestDto.getStoreId())
+    Store store = storeRepository.findByStoreIdAndUserId(requestDto.getStoreId(), userId)
         .orElseThrow(() -> new CustomException(STORE_NOT_FOUND));
 
     boolean exist = productRepository.existsByProductName(
@@ -52,6 +58,9 @@ public class ProductService {
 
   @Transactional
   public UpdateProductResDto updateProduct(Long userId, UUID productId, UpdateProductReqDto requestDto) {
+    storeRepository.findByStoreIdAndUserId(requestDto.getStoreId(), userId)
+        .orElseThrow(() -> new CustomException(STORE_NOT_FOUND));
+
     Product product = productRepository.findByProductIdAndStore_storeId(productId, requestDto.getStoreId())
         .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 
@@ -90,11 +99,35 @@ public class ProductService {
 
   @Transactional(readOnly = true)
   public ProductsResDto getProducts(Long userId, UUID storeId) {
-    Store store = storeRepository.findById(storeId)
+    Store store = storeRepository.findByStoreIdAndUserId(storeId, userId)
         .orElseThrow(() -> new CustomException(STORE_NOT_FOUND));
 
     List<Product> products = productRepository.findByStore(store);
     return ProductsResDto.from(storeId, products);
+  }
+
+  @Transactional
+  public UpdateStatusProductResDto updateStatusProduct(Long userId, UUID storeId, UpdateStatusProductReqDto reqDto) {
+    storeRepository.findByStoreIdAndUserId(storeId,userId)
+        .orElseThrow(() -> new CustomException(STORE_NOT_FOUND));
+
+    List<UUID> productIds = reqDto.getProducts().stream()
+        .map(UpdateStatusProductReqDto.ProductDto::getProductId)
+        .toList();
+
+    Map<UUID, ProductStatus> productStatusMap = reqDto.getProducts().stream()
+        .collect(Collectors.toMap(ProductDto::getProductId, ProductDto::getStatus));
+
+    List<Product> products = productRepository.findAllByProductIdIn(productIds);
+
+    for(Product product : products) {
+      ProductStatus status = productStatusMap.get(product.getProductId());
+      if(status != null) {
+        product.setStatus(status);
+      }
+    }
+
+    return UpdateStatusProductResDto.from(products);
   }
 
   private void updateProductEntity(UpdateProductReqDto requestDto, Product product) {
@@ -105,4 +138,5 @@ public class ProductService {
     product.setStatus(requestDto.getProductDto().getStatus());
     product.setStatus(requestDto.getProductDto().getStatus());
   }
+
 }
