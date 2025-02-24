@@ -42,13 +42,8 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private UserRole role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Address> addresses = new ArrayList<>();
-
-    public void addAddress(Address address) {
-        this.addresses.add(address);
-        address.setUser(this);
-    }
 
     public void deleteAddress(Address address) {
         this.addresses.remove(address);
@@ -80,13 +75,6 @@ public class User extends BaseEntity {
     }
 
     public void updatePhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void updateUserInfo(String username, String email, String nickname, String phoneNumber) {
-        this.username = username;
-        this.email = email;
-        this.nickname = nickname;
         this.phoneNumber = phoneNumber;
     }
 }
