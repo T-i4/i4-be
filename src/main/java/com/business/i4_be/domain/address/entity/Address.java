@@ -11,7 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "address")
+@Table(name = "p_address")
 public class Address {
 
     @Id
