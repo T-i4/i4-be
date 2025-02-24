@@ -70,9 +70,9 @@ public class SecurityConfig {
 
 
                         // Product
-                        .requestMatchers("/api/owner/v1/products").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN", "ROLE_OWNER")
+                        .requestMatchers("/api/owner/v1/products").hasAnyAuthority("MASTER", "ADMIN", "OWNER")
                         .requestMatchers(HttpMethod.GET, "api/v1/products/**","/api/v1/products").permitAll()
-                        .requestMatchers("/api/v1/products/**","/api/v1/products").hasAnyAuthority("ROLE_MASTER", "ROLE_ADMIN", "ROLE_OWNER")
+                        .requestMatchers("/api/v1/products/**","/api/v1/products").hasAnyAuthority("MASTER", "ADMIN", "OWNER")
 
 
                         //리뷰
