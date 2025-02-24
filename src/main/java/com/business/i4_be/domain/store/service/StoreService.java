@@ -3,6 +3,7 @@ package com.business.i4_be.domain.store.service;
 import com.business.i4_be.domain.order.dto.response.OrderResDto;
 import com.business.i4_be.domain.order.entity.Order;
 import com.business.i4_be.domain.order.repository.OrderRepository;
+import com.business.i4_be.domain.review.repository.ReviewRepository;
 import com.business.i4_be.domain.store.constant.StoreCategory;
 import com.business.i4_be.domain.store.constant.StoreIsOpen;
 import com.business.i4_be.domain.store.dto.StoreCategoryUpdateReqDto;
@@ -34,6 +35,7 @@ import java.util.UUID;
 public class StoreService {
     private final StoreRepository storeRepository;
 
+    private final ReviewRepository reviewRepository;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final StoreRepositoryCustom storeRepositoryCustom;
@@ -74,7 +76,7 @@ public class StoreService {
         }
 
         store.setUser(newUser);
-        log.info("🔄 [updateStoreOwner] Store ID: {}, New Owner ID: {}", storeId, newUserId);
+        log.info(" [updateStoreOwner] Store ID: {}, New Owner ID: {}", storeId, newUserId);
 
         return StoreResDto.fromEntity(store);
     }
@@ -83,27 +85,37 @@ public class StoreService {
     public StoreResDto getStore(UUID storeId, Long userId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-        return StoreResDto.fromEntity(store);
+
+        double averageRating = reviewRepository.findAverageRatingByStoreId(storeId);
+        return StoreResDto.fromEntityWithRating(store, averageRating);
     }
+
 
     //가게 조회(단건 : OWNER)
     public StoreResDto getStoreForOwner(UUID storeId, Long userId) {
         Store store = storeRepository.findByStoreIdAndUserId(storeId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND_OR_NO_PERMISSION));
-        return StoreResDto.fromEntity(store);
+        double averageRating = reviewRepository.findAverageRatingByStoreId(storeId);
+        return StoreResDto.fromEntityWithRating(store, averageRating);
     }
 
     //가게 조회(목록 : ALL)
     public Page<StoreResDto> getAllStores(Long userId, Pageable pageable) {
         return storeRepositoryCustom.findAllWithPagination(userId, pageable)
-                .map(StoreResDto::fromEntity);
+                .map(store -> {
+                    double averageRating = reviewRepository.findAverageRatingByStoreId(store.getStoreId());
+                    return StoreResDto.fromEntityWithRating(store, averageRating);
+                });
     }
 
 
     //가게 조회(목록 : OWNER)
     public Page<StoreResDto> getAllStoresForOwner(Long userId, Pageable pageable) {
         return storeRepositoryCustom.findByUserIdWithPagination(userId, pageable)
-                .map(StoreResDto::fromEntity);
+                .map(store -> {
+                    double averageRating = reviewRepository.findAverageRatingByStoreId(store.getStoreId());
+                    return StoreResDto.fromEntityWithRating(store, averageRating);
+                });
     }
 
 
