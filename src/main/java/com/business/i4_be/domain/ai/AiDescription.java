@@ -1,6 +1,7 @@
 package com.business.i4_be.domain.ai;
 
 
+import com.business.i4_be.domain.user.entity.User;
 import com.business.i4_be.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,10 +29,15 @@ public class AiDescription extends BaseEntity {
     @Column(name = "generated_text", nullable = false, length = 255)
     private String generatedText; // AI가 생성한 설명 저장
 
-    public static AiDescription create(String productName, String generatedText) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public static AiDescription create(String productName, String generatedText, User user) {
         return AiDescription.builder()
                 .productName(productName)
                 .generatedText(generatedText)
+                .user(user)
                 .build();
     }
 
