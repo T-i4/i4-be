@@ -55,4 +55,14 @@ public class UserController {
     public ResponseEntity<Map<String, String>> deleteMyAccount(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(userService.deleteMyAccount(userDetails.getUser().getId()));
     }
+
+    // 회원 삭제
+    // MASTER 는 모든 회원을 삭제 가능
+    // ADMIN 은 OWNER 와 USER 만 삭제 가능
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.deleteUser(userId, userDetails.getUser().getId());
+        return ResponseEntity.noContent().build();
+    }
 }
