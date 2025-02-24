@@ -18,7 +18,7 @@ public class Address {
     @GeneratedValue
     private UUID addressId;
 
-    @Column(nullable = false)
+    @Column
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)

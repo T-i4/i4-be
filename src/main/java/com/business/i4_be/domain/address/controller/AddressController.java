@@ -38,7 +38,13 @@ public class AddressController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID addressId,
             @RequestBody AddressReqDto request) {
-        return ResponseEntity.ok(addressService.updateAddress(userDetails.getUser().getId(), addressId, request.getAddress()));
+        return ResponseEntity.ok(
+                addressService.updateAddress(
+                        userDetails.getUser().getId(),
+                        addressId,
+                        request.getUser().getAddress()
+                )
+        );
     }
 
     // 주소 삭제
