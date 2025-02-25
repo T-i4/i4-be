@@ -59,12 +59,11 @@ https://teamsparta.notion.site/API-1a52dc3ef51480ed84e3efb6f288a58c
 
 ## 3️⃣ 기술 스택
 💻 사용 기술 스택
-- Backend : Spring Boot, JPA, QueryDSL, JWT, Spring Security <br>
-- DB : PostgreSQL
-- Chache : Redis
+- Backend : Spring Boot 3.3.8, JPA, QueryDSL, JWT, Spring Security <br>
+- DB : PostgreSQL, Redis
 - AI : Google Generative Language API(Gemini-1.5)
 - Development Tools : Git/GitHub, IntelliJ IDEA
-- Cloud : AWS EC2
+- Cloud : AWS EC2, RDS
 
 ## 4️⃣ 서비스 구성 및 실행 방법
 - 🔧요구 사항:
