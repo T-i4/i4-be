@@ -19,6 +19,7 @@ public class OrderResDto {
 
     private Long userId;
     private String orderStatus;
+    private String orderType;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<OrderProductDto> orderProduct;
@@ -28,6 +29,7 @@ public class OrderResDto {
                 .orderId(order.getOrderId())
                 .userId(order.getUser().getUserId())
                 .orderStatus(order.getOrderStatus().name())
+                .orderType(order.getOrderType().name())
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
                 .orderProduct(order.getOrderProducts().stream()
