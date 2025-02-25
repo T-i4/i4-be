@@ -58,7 +58,6 @@ public class OrderService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Address address = addressRepository.findById(request.getAddressId())
                 .orElseThrow(() -> new CustomException(ErrorCode.ADDRESS_NOT_FOUND));
-
         Store store = storeRepository.findById(request.getStoreId())
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
