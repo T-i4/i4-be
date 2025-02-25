@@ -1,5 +1,7 @@
 package com.business.i4_be.domain.order.service;
 
+import com.business.i4_be.domain.address.entity.Address;
+import com.business.i4_be.domain.address.repository.AddressRepository;
 import com.business.i4_be.domain.order.constant.OrderStatus;
 import com.business.i4_be.domain.order.dto.request.OrderReqDto;
 import com.business.i4_be.domain.order.dto.response.OrderResDto;
@@ -8,9 +10,7 @@ import com.business.i4_be.domain.order.entity.OrderProduct;
 import com.business.i4_be.domain.order.repository.OrderRepository;
 import com.business.i4_be.domain.store.entity.Store;
 import com.business.i4_be.domain.store.repository.StoreRepository;
-import com.business.i4_be.domain.address.entity.Address;
 import com.business.i4_be.domain.user.entity.User;
-import com.business.i4_be.domain.address.repository.AddressRepository;
 import com.business.i4_be.domain.user.repository.UserRepository;
 import com.business.i4_be.global.exception.CustomException;
 import com.business.i4_be.global.exception.ErrorCode;
@@ -66,6 +66,7 @@ public class OrderService {
                 .store(store)
                 .orderStatus(OrderStatus.COMPLETED)
                 .address(address)
+                .orderType(request.getOrderType())
                 .build();
 
         List<OrderProduct> orderProducts = request.getOrderProducts().stream()

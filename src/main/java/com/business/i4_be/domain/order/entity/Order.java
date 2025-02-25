@@ -35,7 +35,7 @@ public class Order extends BaseEntity {
 
     @Column(name = "order_type")
     @Enumerated(EnumType.STRING)
-    private OrderType oderType;
+    private OrderType orderType;
 
     @Column(name = "order_status")
     @Enumerated(EnumType.STRING)
