@@ -72,12 +72,13 @@ https://teamsparta.notion.site/API-1a52dc3ef51480ed84e3efb6f288a58c
   - Redis (Redis 7.xx 버전)
   - PostgreSQL
   - Gradle
-- 🔧설치 및 실행 방법
-  1. 저장소 클론
-   ``` 
+- 🔧설치 및 실행 방법<br>
+
+1. 저장소 클론
+ ``` 
    git clone https://github.com/sparta-i4/i4-be.git
-   ```
-  2. 프로젝트 디렉토리 이동
+  ```
+2. 프로젝트 디렉토리 이동
  ```
 cd i4-be
 ```
@@ -89,7 +90,7 @@ cd i4-be
  ```
 ./gradlew bootRun
 ```
-  7. application.yml 파일 설정
+  5. application.yml 파일 설정
 
  ```
 spring:
@@ -119,3 +120,12 @@ google:
 
 
 ## 5️⃣ 팀원 역할분담
+| 기능                     | 담당자  |
+|-----------------|--------|
+| 가게, 리뷰, AI 추천   | 김채원  |
+| 유저, 주소      | 송예지  |
+| 상품, 장바구니, 배포    | 박상욱  |
+| 주문, 결제      | 박준혁  |
+
+
+
